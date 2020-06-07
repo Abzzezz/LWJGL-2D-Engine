@@ -8,8 +8,10 @@
  * Abzzezz Util (https://github.com/Abzzezz/AbzzezzUtil)
  */
 
-package net.bplaced.abzzezz.screens;
+package net.bplaced.abzzezz.ui;
 
+import net.bplaced.abzzezz.ui.uicomponents.Button;
+import net.bplaced.abzzezz.ui.uicomponents.UIComponent;
 import org.lwjgl.opengl.Display;
 
 import java.util.ArrayList;
@@ -17,49 +19,44 @@ import java.util.List;
 
 public class Screen {
 
-    private List<Button> buttons = new ArrayList<>();
+    private final List<UIComponent> uiComponents = new ArrayList<>();
 
     /**
      * Int method to add things like buttons etc.
      */
-    public void init() {
-    }
+    public void init() { }
 
     /**
      * Gets called when button is pressed then looks for action event
+     *
      * @param buttonID
      */
-    public void buttonPressed(float buttonID) {
-    }
+    public void buttonPressed(float buttonID) {}
 
     /*
     Screen drawing - simple
      */
     public void drawScreen() {
-        buttons.forEach(button -> {
-                    button.drawButton();
-                }
-        );
+        uiComponents.forEach(UIComponent::drawComponent);
     }
 
     /**
      * Gets called if mouse button down
+     *
      * @param mouseButton
      */
     public void mousePressed(int mouseButton) {
-        buttons.forEach(menuButton -> {
-            if (menuButton.isButtonHovered() && mouseButton == 0) {
-                buttonPressed(menuButton.getId());
-            }
-        });
+        uiComponents.forEach(uiComponent -> uiComponent.mouseListener(mouseButton));
     }
 
     /**
      * Gets called when keyboard key is down
+     *
      * @param keyCode
      * @param keyTyped
      */
     public void keyTyped(int keyCode, char keyTyped) {
+        uiComponents.forEach(uiComponent -> uiComponent.keyListener(keyCode, keyTyped));
     }
 
     protected int getWidth() {
@@ -70,7 +67,11 @@ public class Screen {
         return Display.getHeight();
     }
 
-    public List<Button> getButtons() {
-        return buttons;
+    public List<UIComponent> getUiComponents() {
+        return uiComponents;
+    }
+
+    public Button getButtonByID(float id) {
+        return (Button) uiComponents.stream().filter(uiComponent -> uiComponent instanceof Button).filter(uiComponent -> ((Button) uiComponent).getId() == id).findFirst().get();
     }
 }

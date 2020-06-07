@@ -13,6 +13,7 @@ package example;
 import ga.abzzezz.util.data.FileUtil;
 import net.bplaced.abzzezz.file.CustomFile;
 
+import java.net.MalformedURLException;
 import java.util.Arrays;
 
 /**
@@ -33,7 +34,7 @@ public class ExampleFile extends CustomFile {
      */
     @Override
     public void write() {
-        FileUtil.addToFile("EXAMPLE TEXT", thisFile);
+        FileUtil.appendToFile("EXAMPLE TEXT", thisFile, true);
     }
 
     /**
@@ -41,6 +42,10 @@ public class ExampleFile extends CustomFile {
      */
     @Override
     public void read() {
-        System.out.println(Arrays.toString(FileUtil.getFileContentAsList(thisFile).toArray()));
+        try {
+            System.out.println(Arrays.toString(FileUtil.getFileContentAsList(thisFile).toArray()));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
     }
 }

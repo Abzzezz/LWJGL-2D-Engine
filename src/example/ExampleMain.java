@@ -24,11 +24,11 @@ public class ExampleMain {
     public static void main(String[] args) {
         /*
         Init Engine
-        Then configure further (here: add new File Object)
+        Then configure further (here: add an new File Object)
         Then start
          */
         EngineCore engineCore = new EngineCore(600, 600, new ExampleScreen());
-        engineCore.getFileManager().getFiles().add(new ExampleFile("EXAMPLEFILE.EXAMPLE"));
+        engineCore.addSaveFile(new ExampleFile("EXAMPLEFILE.EXAMPLE"));
         engineCore.start();
     }
 }

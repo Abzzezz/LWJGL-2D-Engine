@@ -10,12 +10,15 @@
 
 package example;
 
-import net.bplaced.abzzezz.screens.Button;
-import net.bplaced.abzzezz.screens.Screen;
+import net.bplaced.abzzezz.ui.uicomponents.Button;
+import net.bplaced.abzzezz.ui.Screen;
+import net.bplaced.abzzezz.ui.uicomponents.CheckBox;
+import net.bplaced.abzzezz.ui.uicomponents.TextField;
 import net.bplaced.abzzezz.utils.FontUtil;
 import net.bplaced.abzzezz.utils.RenderUtil;
 
 import java.awt.*;
+import java.util.Arrays;
 
 /**
  * Example Class to understand how to make screens
@@ -31,10 +34,15 @@ public class ExampleScreen extends Screen {
     Initialise FontUtil
     add Button (buttonID, Text, xPos, yPos)
      */
+
+    private TextField textField;
     @Override
     public void init() {
-        fontUtil = new FontUtil("BigNoodleTitling", 40);
-        getButtons().add(new Button(1, "test button", 200, 200));
+        this.textField = new TextField(10, 100, "Example Text box");
+        this.fontUtil = new FontUtil("Roboto-Light", 20);
+        getUiComponents().add(new Button(1, "This is a example button", 10, 200));
+        getUiComponents().add(textField);
+        getUiComponents().add(new CheckBox(10, 300, "This is a checkbox"));
         super.init();
     }
 
@@ -46,6 +54,7 @@ public class ExampleScreen extends Screen {
     public void buttonPressed(float buttonID) {
         if(buttonID == 1) {
             System.out.println("example button down");
+            System.out.println(textField.toString());;
         }
         super.buttonPressed(buttonID);
     }
@@ -55,9 +64,8 @@ public class ExampleScreen extends Screen {
      */
     @Override
     public void drawScreen() {
-        fontUtil.drawString("Example String", 100, 100, Color.BLACK);
-
-        RenderUtil.drawQuad(100, 100, 40, 40, Color.BLUE);
+        fontUtil.drawString("This is a example string at 10, 10", 10, 10, Color.BLACK);
+        RenderUtil.drawQuad(10, 500, 40, 40, Color.BLUE);
         super.drawScreen();
     }
 }

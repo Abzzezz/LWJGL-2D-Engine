@@ -17,6 +17,7 @@ public class MouseUtil {
 
     /**
      * Checks if mouse in a quad radius
+     *
      * @param xPos
      * @param yPos
      * @param width
@@ -29,10 +30,26 @@ public class MouseUtil {
     }
 
     /**
-     * Mouse positions
+     * Checks if mouse is in a circle radius
+     *
+     * @param xPos
+     * @param yPos
+     * @param radius
      * @return
      */
-    private static int[] getMousePositions() {
+
+    public static boolean mouseHovered(int xPos, int yPos, int radius) {
+        double px = getMousePositions()[0] - xPos;
+        double py = getMousePositions()[1] - yPos;
+        return Math.sqrt(px * px + py * py) <= radius;
+    }
+
+    /**
+     * Mouse positions
+     *
+     * @return
+     */
+    public static int[] getMousePositions() {
         int x = Mouse.getX();
         int y = Display.getHeight() - Mouse.getY();
         return new int[]{x, y};

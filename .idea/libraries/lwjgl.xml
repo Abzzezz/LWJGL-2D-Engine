@@ -1,11 +1,10 @@
 <component name="libraryTable">
   <library name="lwjgl">
     <CLASSES>
-      <root url="jar://D:/Libraries/lwjgl.jar!/" />
-      <root url="jar://D:/Libraries/lwjgl_util.jar!/" />
-      <root url="jar://D:/Libraries/commons-io-2.6.jar!/" />
-      <root url="jar://D:/Libraries/AbzzezzUtil.jar!/" />
-      <root url="jar://D:/Libraries/slick.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../Libraries/commons-io-2.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../Libraries/lwjgl.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../Libraries/lwjgl_util.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../Libraries/slick.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

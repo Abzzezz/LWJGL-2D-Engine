@@ -30,6 +30,9 @@ public class FontUtil {
             InputStream inputStream = new URL("file:" + EngineCore.getInstance().getFontDir() + fontName + ".ttf").openStream();
             Font awtFont = Font.createFont(Font.PLAIN, inputStream);
             this.unicodeFont = new UnicodeFont(awtFont, size, false, false);
+            unicodeFont.addAsciiGlyphs();
+            unicodeFont.getEffects().add(new ColorEffect(Color.WHITE));
+            unicodeFont.loadGlyphs();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -43,16 +46,9 @@ public class FontUtil {
      * @param color
      */
     public void drawString(String text, float xPos, float yPos, Color color) {
-        try {
-            GL11.glEnable(GL11.GL_BLEND);
-            unicodeFont.addAsciiGlyphs();
-            unicodeFont.getEffects().add(new ColorEffect(color));
-            unicodeFont.loadGlyphs();
-            unicodeFont.drawString(xPos, yPos, text, new org.newdawn.slick.Color(color.getRGB()));
-            GL11.glDisable(GL11.GL_BLEND);
-        } catch (SlickException e) {
-            Logger.log("Error rendering font", Logger.LogType.ERROR);
-        }
+        GL11.glEnable(GL11.GL_BLEND);
+        unicodeFont.drawString(xPos, yPos, text, new org.newdawn.slick.Color(color.getRGB()));
+        GL11.glDisable(GL11.GL_BLEND);
     }
 
     public int getStringWidth(String text) {

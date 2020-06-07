@@ -11,8 +11,9 @@
 package net.bplaced.abzzezz;
 
 import ga.abzzezz.util.logging.Logger;
+import net.bplaced.abzzezz.file.CustomFile;
 import net.bplaced.abzzezz.file.FileManager;
-import net.bplaced.abzzezz.screens.Screen;
+import net.bplaced.abzzezz.ui.Screen;
 import net.bplaced.abzzezz.utils.FontUtil;
 import net.bplaced.abzzezz.utils.Util;
 import org.lwjgl.LWJGLException;
@@ -183,6 +184,7 @@ public class EngineCore {
      */
     private void update() {
         screen.drawScreen();
+
         while (Mouse.next()) {
             if (Mouse.getEventButtonState()) screen.mousePressed(Mouse.getEventButton());
         }
@@ -193,7 +195,6 @@ public class EngineCore {
 
     /**
      * Getters and setters to configure
-     *
      */
 
     public String getGameName() {
@@ -217,8 +218,16 @@ public class EngineCore {
     }
 
     public void setScreen(Screen screen) {
+        //Clear old screen
+        this.screen.getUiComponents().clear();
+        //Init new screen
         screen.init();
+        //Set new screen
         this.screen = screen;
+    }
+
+    public void addSaveFile(CustomFile file) {
+        getFileManager().getFiles().add(file);
     }
 
     public File getMainDir() {
