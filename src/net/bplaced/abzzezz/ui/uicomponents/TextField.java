@@ -10,6 +10,7 @@
 
 package net.bplaced.abzzezz.ui.uicomponents;
 
+import ga.abzzezz.util.data.Clipboard;
 import net.bplaced.abzzezz.utils.MouseUtil;
 import net.bplaced.abzzezz.utils.RenderUtil;
 import net.bplaced.abzzezz.utils.Util;
@@ -51,35 +52,51 @@ public class TextField implements UIComponent {
 
     @Override
     public void keyListener(int keyCode, char keyTyped) {
-        if (clicked) {
+        if (isClicked()) {
+            if (isDeleteAll()) {
+                displayText.delete(0, displayText.length());
+                backupText.delete(0, backupText.length());
+            }
+            //TODO: Fix clipboard spamming. - Overflow
+            if (isControlV()) {
+                displayText.append(Clipboard.getClipboard());
+            }
             if (keyCode == Keyboard.KEY_BACK) {
-                /**
-                 *
-                 */
                 if (!(displayText.length() == 0)) {
                     /*
                     If backups lengh is 0 then stop restoring old data.
                      */
-                    if(!(backupText.length() == 0)) {
-                        //Insert at beginning
+                    displayText.delete(getLastDisplayChar()[0], getLastDisplayChar()[1]);
+                    if (!(backupText.length() == 0)) {
                         int[] bounds = {backupText.length() - 1, backupText.length()};
                         displayText.insert(0, backupText.substring(bounds[0], bounds[1]));
-                        //Delete old character
                         backupText.delete(bounds[0], bounds[1]);
                     }
-                    //Delete from back
-                    displayText.delete(displayText.length() - 1, displayText.length());
                 }
             } else {
+                //If text out of bounds append old characters to backuptext and delete from displayed string
+                if (textFont.getStringWidth(displayText.toString()) >= width - textFont.getStringWidth(String.valueOf(keyTyped))) {
+                    backupText.append(displayText.substring(0, 1));
+                    displayText.delete(0, 1);
+                }
+
                 //Append typed char
-                if (!(keyCode == Keyboard.KEY_LSHIFT) && !(keyCode == Keyboard.KEY_RSHIFT)) displayText.append(keyTyped);
-            }
-            //If text out of bounds append old characters to backuptext and delete from displayed string
-            if (textFont.getStringWidth(displayText.toString()) > width) {
-                backupText.append(displayText.substring(0, 1));
-                displayText.delete(0, 1);
+                if (!(keyCode == Keyboard.KEY_LSHIFT) && !(keyCode == Keyboard.KEY_RSHIFT))
+                    displayText.append(keyTyped);
             }
         }
+    }
+
+    private int[] getLastDisplayChar() {
+        return new int[] {displayText.length() - 1, displayText.length()};
+    }
+
+    private boolean isDeleteAll() {
+        return (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) && Keyboard.isKeyDown(Keyboard.KEY_BACK);
+    }
+
+    private boolean isControlV() {
+        return (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)) && Keyboard.isKeyDown(Keyboard.KEY_V);
     }
 
     @Override

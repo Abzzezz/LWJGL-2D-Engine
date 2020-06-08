@@ -10,6 +10,8 @@
 
 package net.bplaced.abzzezz.ui.uicomponents;
 
+import ga.abzzezz.util.easing.Quint;
+import ga.abzzezz.util.math.AnimationUtil;
 import ga.abzzezz.util.misc.ColorUtil;
 import net.bplaced.abzzezz.utils.MouseUtil;
 import net.bplaced.abzzezz.utils.RenderUtil;
@@ -29,6 +31,7 @@ public class CheckBox implements UIComponent {
         this.yPos = yPos;
         this.size = size;
         this.text = text;
+        this.animationUtil = new AnimationUtil(Quint.class, 0, 0,  size / 2, 1, true, false);
     }
 
     public CheckBox(boolean checked, float xPos, float yPos, int size, String text) {
@@ -37,6 +40,7 @@ public class CheckBox implements UIComponent {
         this.yPos = yPos;
         this.size = size;
         this.text = text;
+        this.animationUtil = new AnimationUtil(Quint.class, 0, 0,  size / 2, 1, true, false);
     }
 
     public CheckBox(boolean checked, float xPos, float yPos, String text) {
@@ -46,6 +50,7 @@ public class CheckBox implements UIComponent {
         this.text = text;
         //Auto set
         this.size = (int) textFont.getHeight();
+        this.animationUtil = new AnimationUtil(Quint.class, 0, 0,  size / 2, 1, true, false);
     }
 
     public CheckBox(float xPos, float yPos, String text) {
@@ -54,13 +59,21 @@ public class CheckBox implements UIComponent {
         this.text = text;
         //Auto set
         this.size = (int) textFont.getHeight();
+        this.animationUtil = new AnimationUtil(Quint.class, 0, 0,  size / 2, 1, true, false);
     }
 
+    private AnimationUtil animationUtil;
+
+    /**
+     * Check box now animated
+     */
     @Override
     public void drawComponent() {
+        animationUtil.animate();
         RenderUtil.drawCircle(xPos, yPos, size, Util.mainColor);
-        if(isChecked()) RenderUtil.drawCircle(xPos, yPos, size / 2, ColorUtil.darker(Util.mainColor, 3));
-        textFont.drawString(text, xPos + size, yPos - size / 2, Color.BLACK);
+
+        RenderUtil.drawCircle(xPos, yPos, animationUtil.getInt(), ColorUtil.darker(Util.mainColor, 3));
+        textFont.drawString(text, xPos + size, yPos - textFont.getHeight() / 1.5F, Color.BLACK);
     }
 
     @Override
@@ -68,11 +81,14 @@ public class CheckBox implements UIComponent {
 
     @Override
     public void mouseListener(int mouseButton) {
-        if(checkBoxHovered() && mouseButton == 0) checked = !checked;
+        if(checkBoxHovered() && mouseButton == 0) {
+            checked = !checked;
+            animationUtil.reversed = !checked;
+        }
     }
 
     private boolean checkBoxHovered() {
-        return MouseUtil.mouseHovered((int)xPos, (int) yPos, 10);
+        return MouseUtil.mouseHovered(xPos, yPos, size);
     }
 
     public boolean isChecked() {

@@ -17,14 +17,14 @@ import org.lwjgl.opengl.Display;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Screen {
+public abstract class Screen {
 
     private final List<UIComponent> uiComponents = new ArrayList<>();
 
     /**
      * Int method to add things like buttons etc.
      */
-    public void init() { }
+    public void init() {}
 
     /**
      * Gets called when button is pressed then looks for action event

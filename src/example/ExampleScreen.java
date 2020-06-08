@@ -10,14 +10,17 @@
 
 package example;
 
-import net.bplaced.abzzezz.ui.uicomponents.Button;
+import net.bplaced.abzzezz.ui.uicomponents.*;
 import net.bplaced.abzzezz.ui.Screen;
-import net.bplaced.abzzezz.ui.uicomponents.CheckBox;
+import net.bplaced.abzzezz.ui.uicomponents.Button;
 import net.bplaced.abzzezz.ui.uicomponents.TextField;
 import net.bplaced.abzzezz.utils.FontUtil;
 import net.bplaced.abzzezz.utils.RenderUtil;
+import org.lwjgl.BufferUtils;
 
 import java.awt.*;
+import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -38,11 +41,17 @@ public class ExampleScreen extends Screen {
     private TextField textField;
     @Override
     public void init() {
+        ArrayList arrayList= new ArrayList();
+        arrayList.add("Test");
+        arrayList.add("Test 1");
+
         this.textField = new TextField(10, 100, "Example Text box");
         this.fontUtil = new FontUtil("Roboto-Light", 20);
         getUiComponents().add(new Button(1, "This is a example button", 10, 200));
         getUiComponents().add(textField);
-        getUiComponents().add(new CheckBox(10, 300, "This is a checkbox"));
+        getUiComponents().add(new CheckBox(10, 300, 10, "This is a checkbox"));
+        getUiComponents().add(new ListView<>(arrayList, 100, 400, 100, "Example ListView"));
+        getUiComponents().add(new ColorChooser(500, 100, 100));
         super.init();
     }
 

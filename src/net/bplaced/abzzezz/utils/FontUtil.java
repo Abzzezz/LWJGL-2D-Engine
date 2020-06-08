@@ -28,6 +28,7 @@ public class FontUtil {
     public FontUtil(String fontName, int size) {
         try {
             InputStream inputStream = new URL("file:" + EngineCore.getInstance().getFontDir() + fontName + ".ttf").openStream();
+
             Font awtFont = Font.createFont(Font.PLAIN, inputStream);
             this.unicodeFont = new UnicodeFont(awtFont, size, false, false);
             unicodeFont.addAsciiGlyphs();

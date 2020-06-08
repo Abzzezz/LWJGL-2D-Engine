@@ -28,7 +28,6 @@ public class ExampleMain {
         Then start
          */
         EngineCore engineCore = new EngineCore(600, 600, new ExampleScreen());
-        engineCore.addSaveFile(new ExampleFile("EXAMPLEFILE.EXAMPLE"));
         engineCore.start();
     }
 }

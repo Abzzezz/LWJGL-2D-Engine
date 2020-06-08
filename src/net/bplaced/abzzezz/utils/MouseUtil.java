@@ -38,7 +38,7 @@ public class MouseUtil {
      * @return
      */
 
-    public static boolean mouseHovered(int xPos, int yPos, int radius) {
+    public static boolean mouseHovered(float xPos, float yPos, int radius) {
         double px = getMousePositions()[0] - xPos;
         double py = getMousePositions()[1] - yPos;
         return Math.sqrt(px * px + py * py) <= radius;
