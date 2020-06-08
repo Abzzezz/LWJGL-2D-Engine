@@ -22,11 +22,12 @@ public class CustomFile {
 
     /**
      * Simple custom file. Use as parent to make own files and load them automatically with the engine
+     *
      * @param fileName
      */
     public CustomFile(String fileName) {
         this.thisFile = new File(EngineCore.getInstance().getMainDir(), fileName);
-        if(!thisFile.exists()) {
+        if (!thisFile.exists()) {
             Logger.log("Creating new file", Logger.LogType.INFO);
             try {
                 thisFile.createNewFile();
@@ -38,8 +39,11 @@ public class CustomFile {
     }
 
 
-    public void write(){}
-    public void read() {}
+    public void write() {
+    }
+
+    public void read() {
+    }
 
 
 }

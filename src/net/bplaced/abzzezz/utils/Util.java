@@ -18,6 +18,14 @@ public class Util {
      * Default set to white
      */
     public static Color backgroundColor = Color.WHITE;
-
+    /**
+     * Change color
+     */
     public static Color mainColor = new Color(0xAB89EE);
+
+    public static String textFont = "Roboto-Light";
+
+    public static Color textColor = Color.BLACK;
+
+
 }

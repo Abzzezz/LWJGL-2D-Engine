@@ -11,10 +11,8 @@
 package net.bplaced.abzzezz.utils;
 
 
-import ga.abzzezz.util.logging.Logger;
 import net.bplaced.abzzezz.EngineCore;
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 
@@ -41,6 +39,7 @@ public class FontUtil {
 
     /**
      * Font rendering using Slick
+     *
      * @param text
      * @param xPos
      * @param yPos

@@ -23,6 +23,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
 import java.io.File;
 
 public class EngineCore {
@@ -32,7 +33,9 @@ public class EngineCore {
     private float gameVersion;
     private Screen screen;
     private File mainDir;
-    private int fpsSync, width, height;
+    private int fpsSync;
+    private final int width;
+    private final int height;
 
     /*
     Handlers
@@ -146,6 +149,7 @@ public class EngineCore {
 
     /**
      * Init GL Method to initialise OpenGL
+     *
      * @param width
      * @param height
      */
@@ -250,6 +254,10 @@ public class EngineCore {
         return fontDir;
     }
 
+    public void setFontDir(String fontDir) {
+        this.fontDir = fontDir;
+    }
+
     public FileManager getFileManager() {
         return fileManager;
     }
@@ -258,8 +266,20 @@ public class EngineCore {
         this.fileManager = fileManager;
     }
 
-    public void setFontDir(String fontDir) {
-        this.fontDir = fontDir;
+    public void setTextColor(Color color) {
+        Util.textColor = color;
+    }
+
+    public void setMainColor(Color color) {
+        Util.mainColor = color;
+    }
+
+    public void setTextFont(String fontName) {
+        Util.textFont = fontName;
+    }
+
+    public void setBackgroundColor(Color color) {
+        Util.backgroundColor = color;
     }
 
 }

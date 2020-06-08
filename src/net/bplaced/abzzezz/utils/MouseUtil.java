@@ -30,7 +30,7 @@ public class MouseUtil {
     }
 
     /**
-     * Checks if mouse is in a circle radius
+     * Check if mouse is close to position (in radius)
      *
      * @param xPos
      * @param yPos

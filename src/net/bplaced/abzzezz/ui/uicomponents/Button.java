@@ -16,8 +16,10 @@ import net.bplaced.abzzezz.utils.Util;
 
 public class Button implements UIComponent {
 
-    private String text;
-    private float xPos, yPos, id;
+    private final String text;
+    private final float xPos;
+    private final float yPos;
+    private final float id;
 
     /**
      * Simple button. Buttons can be added just use this as a parent
@@ -32,10 +34,9 @@ public class Button implements UIComponent {
         this.text = text;
         this.xPos = xPos;
         this.yPos = yPos;
-
     }
 
-    public boolean isButtonHovered() {
+    public boolean buttonHovered() {
         return MouseUtil.mouseHovered(xPos, yPos, getDimensions()[0], getDimensions()[1]);
     }
 
@@ -47,19 +48,27 @@ public class Button implements UIComponent {
         return new float[]{textFont.getStringWidth(text), textFont.getHeight()};
     }
 
+    /**
+     * Size is dependent on text length
+     */
     @Override
     public void drawComponent() {
-        RenderUtil.drawQuad(xPos, yPos, getDimensions()[0], getDimensions()[1], Util.mainColor);
-        textFont.drawString(text, xPos, yPos, isButtonHovered() ? textColor.brighter() : textColor);
+        RenderUtil.drawQuad(xPos, yPos, getDimensions()[0], getDimensions()[1], buttonHovered() ? Util.mainColor.darker() : Util.mainColor);
+        textFont.drawString(text, xPos, yPos, buttonHovered() ? textColor.brighter() : textColor);
     }
 
     @Override
     public void keyListener(int keyCode, char keyTyped) {
     }
 
+    /**
+     * Button pressed
+     *
+     * @param mouseButton
+     */
     @Override
     public void mouseListener(int mouseButton) {
-        if (isButtonHovered() && mouseButton == 0) engineCoreInstance.getScreen().buttonPressed(getId());
+        if (buttonHovered() && mouseButton == 0) engineCoreInstance.getScreen().buttonPressed(getId());
     }
 
     public float getXPos() {

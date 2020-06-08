@@ -17,7 +17,7 @@ import java.util.List;
 
 public class FileManager {
 
-    private List<CustomFile> files;
+    private final List<CustomFile> files;
 
     public FileManager() {
         this.files = new ArrayList<>();

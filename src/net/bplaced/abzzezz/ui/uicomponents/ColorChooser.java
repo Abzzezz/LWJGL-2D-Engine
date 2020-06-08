@@ -11,34 +11,49 @@
 package net.bplaced.abzzezz.ui.uicomponents;
 
 import ga.abzzezz.util.misc.ColorUtil;
+import net.bplaced.abzzezz.utils.FontUtil;
 import net.bplaced.abzzezz.utils.RenderUtil;
+import net.bplaced.abzzezz.utils.Util;
+
+import java.awt.*;
+
 
 public class ColorChooser implements UIComponent {
 
 
-    private int size;
-    private float xPos, yPos;
-    private String dialog;
+    private final int size;
+    private final float xPos;
+    private final float yPos;
 
+    /*
+    TODO: Make text fit
+     */
+    private FontUtil fontUtil;
 
     public ColorChooser(float xPos, float yPos, int size) {
         this.size = size;
         this.xPos = xPos;
         this.yPos = yPos;
+        fontUtil = new FontUtil(Util.textFont, size / 5);
     }
 
     @Override
     public void drawComponent() {
         RenderUtil.drawColorWheel(xPos, yPos, size, 20);
 
-        if(RenderUtil.getCurrentColor() != null) {
-            RenderUtil.drawCircle(xPos, yPos, size - 20, RenderUtil.getCurrentColor());
-            textFont.drawString(ColorUtil.convertColorToHexDecimal(RenderUtil.getCurrentColor()), xPos - size / 2, yPos - textFont.getHeight() / 2, textColor);
+        if (RenderUtil.getCurrentColor() != null) {
+            RenderUtil.drawCircle(xPos, yPos, size - 20, 4, RenderUtil.getCurrentColor());
+            fontUtil.drawString(ColorUtil.convertColorToHexDecimal(RenderUtil.getCurrentColor()), xPos - size / 2, yPos - fontUtil.getHeight() / 2, textColor);
         }
     }
 
+    public Color getSelectedColor() {
+        return RenderUtil.getCurrentColor() != null ? RenderUtil.getCurrentColor() : Color.BLACK;
+    }
+
     @Override
-    public void keyListener(int keyCode, char keyTyped) {}
+    public void keyListener(int keyCode, char keyTyped) {
+    }
 
     @Override
     public void mouseListener(int mouseButton) {

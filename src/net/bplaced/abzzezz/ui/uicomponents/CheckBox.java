@@ -12,7 +12,6 @@ package net.bplaced.abzzezz.ui.uicomponents;
 
 import ga.abzzezz.util.easing.Quint;
 import ga.abzzezz.util.math.AnimationUtil;
-import ga.abzzezz.util.misc.ColorUtil;
 import net.bplaced.abzzezz.utils.MouseUtil;
 import net.bplaced.abzzezz.utils.RenderUtil;
 import net.bplaced.abzzezz.utils.Util;
@@ -25,13 +24,14 @@ public class CheckBox implements UIComponent {
     private float xPos, yPos;
     private int size;
     private String text;
+    private final AnimationUtil animationUtil;
 
     public CheckBox(float xPos, float yPos, int size, String text) {
         this.xPos = xPos;
         this.yPos = yPos;
         this.size = size;
         this.text = text;
-        this.animationUtil = new AnimationUtil(Quint.class, 0, 0,  size / 2, 1, true, false);
+        this.animationUtil = new AnimationUtil(Quint.class, 0, 0, size / 2, 1, true, false);
     }
 
     public CheckBox(boolean checked, float xPos, float yPos, int size, String text) {
@@ -40,7 +40,7 @@ public class CheckBox implements UIComponent {
         this.yPos = yPos;
         this.size = size;
         this.text = text;
-        this.animationUtil = new AnimationUtil(Quint.class, 0, 0,  size / 2, 1, true, false);
+        this.animationUtil = new AnimationUtil(Quint.class, 0, 0, size / 2, 1, true, false);
     }
 
     public CheckBox(boolean checked, float xPos, float yPos, String text) {
@@ -50,7 +50,7 @@ public class CheckBox implements UIComponent {
         this.text = text;
         //Auto set
         this.size = (int) textFont.getHeight();
-        this.animationUtil = new AnimationUtil(Quint.class, 0, 0,  size / 2, 1, true, false);
+        this.animationUtil = new AnimationUtil(Quint.class, 0, 0, size / 2, 1, true, false);
     }
 
     public CheckBox(float xPos, float yPos, String text) {
@@ -59,31 +59,30 @@ public class CheckBox implements UIComponent {
         this.text = text;
         //Auto set
         this.size = (int) textFont.getHeight();
-        this.animationUtil = new AnimationUtil(Quint.class, 0, 0,  size / 2, 1, true, false);
+        this.animationUtil = new AnimationUtil(Quint.class, 0, 0, size / 2, 1, true, false);
     }
-
-    private AnimationUtil animationUtil;
 
     /**
      * Check box now animated
      */
     @Override
     public void drawComponent() {
-        animationUtil.animate();
-        RenderUtil.drawCircle(xPos, yPos, size, Util.mainColor);
+        if(checked) animationUtil.animate();
+        RenderUtil.drawCircle(xPos + size / 2, yPos, size, 3, Util.mainColor);
+        RenderUtil.drawCircle(xPos + size / 2, yPos, animationUtil.getInt(), 3, Util.mainColor.darker());
 
-        RenderUtil.drawCircle(xPos, yPos, animationUtil.getInt(), ColorUtil.darker(Util.mainColor, 3));
-        textFont.drawString(text, xPos + size, yPos - textFont.getHeight() / 1.5F, Color.BLACK);
+        textFont.drawString(text, xPos + size * 2, yPos - textFont.getHeight() / 1.5F, Color.BLACK);
     }
 
     @Override
-    public void keyListener(int keyCode, char keyTyped) {}
+    public void keyListener(int keyCode, char keyTyped) {
+    }
 
     @Override
     public void mouseListener(int mouseButton) {
-        if(checkBoxHovered() && mouseButton == 0) {
+        if (checkBoxHovered() && mouseButton == 0) {
             checked = !checked;
-            animationUtil.reversed = !checked;
+            if(!checked) animationUtil.reset();
         }
     }
 
@@ -103,12 +102,12 @@ public class CheckBox implements UIComponent {
         return xPos;
     }
 
-    public void setYPos(float xPos) {
-        this.xPos = xPos;
+    public float getYPos() {
+        return yPos;
     }
 
-    public float getYos() {
-        return yPos;
+    public void setYPos(float xPos) {
+        this.xPos = xPos;
     }
 
     public void setYos(float yPos) {
@@ -121,6 +120,10 @@ public class CheckBox implements UIComponent {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 
 }

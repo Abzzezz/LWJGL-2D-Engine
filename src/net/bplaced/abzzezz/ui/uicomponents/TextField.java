@@ -13,18 +13,27 @@ package net.bplaced.abzzezz.ui.uicomponents;
 import ga.abzzezz.util.data.Clipboard;
 import net.bplaced.abzzezz.utils.MouseUtil;
 import net.bplaced.abzzezz.utils.RenderUtil;
+import net.bplaced.abzzezz.utils.ScissorUtil;
 import net.bplaced.abzzezz.utils.Util;
 import org.lwjgl.input.Keyboard;
+
+import java.awt.*;
 
 
 public class TextField implements UIComponent {
 
-    private StringBuilder backupText = new StringBuilder(), displayText = new StringBuilder();
-    private float xPos, yPos;
-    private int width, height;
-    private boolean clicked;
-    private String name;
+    private final StringBuilder backupText = new StringBuilder();
+    private final StringBuilder displayText = new StringBuilder();
+    private final float xPos;
+    private final float yPos;
+    private final int width;
+    private final int height;
+    private boolean clicked, selectedAll;
+    private final String name;
 
+    /*
+    TODO: More work, Adding to clipboard etc. Text moving, selecting
+     */
     public TextField(float xPos, float yPos, String name) {
         this.xPos = xPos;
         this.yPos = yPos;
@@ -44,24 +53,46 @@ public class TextField implements UIComponent {
 
     @Override
     public void drawComponent() {
-        RenderUtil.drawQuad(xPos, yPos, width, height, Util.mainColor);
-        textFont.drawString(displayText.toString(), xPos, yPos, textColor);
+        ScissorUtil.enableScissor();
+        ScissorUtil.scissor(xPos, yPos, width, height);
+        RenderUtil.drawQuad(xPos, yPos, width, height, clicked ? Util.mainColor.darker() : Util.mainColor);
+        textFont.drawString(displayText.toString(), xPos, yPos, selectedAll ? Color.LIGHT_GRAY : textColor);
+        ScissorUtil.disableScissor();
         textFont.drawString(name, xPos, yPos - height, textColor);
     }
 
-
+    /**
+     * @param keyCode
+     * @param keyTyped
+     */
     @Override
     public void keyListener(int keyCode, char keyTyped) {
         if (isClicked()) {
+            /**
+             * Keyboard combos
+             */
+            if (isControlA()) {
+                selectedAll = true;
+                return;
+            }
+
             if (isDeleteAll()) {
-                displayText.delete(0, displayText.length());
-                backupText.delete(0, backupText.length());
+                deleteAllText();
+                return;
             }
             //TODO: Fix clipboard spamming. - Overflow
             if (isControlV()) {
                 displayText.append(Clipboard.getClipboard());
+                return;
             }
+
             if (keyCode == Keyboard.KEY_BACK) {
+                //Control A Delete
+                if (selectedAll) {
+                    selectedAll = false;
+                    deleteAllText();
+                    return;
+                }
                 if (!(displayText.length() == 0)) {
                     /*
                     If backups lengh is 0 then stop restoring old data.
@@ -87,8 +118,20 @@ public class TextField implements UIComponent {
         }
     }
 
+    private void deleteAllText() {
+        displayText.delete(0, displayText.length());
+        backupText.delete(0, backupText.length());
+    }
+
     private int[] getLastDisplayChar() {
-        return new int[] {displayText.length() - 1, displayText.length()};
+        return new int[]{displayText.length() - 1, displayText.length()};
+    }
+
+    /**
+     * TODO: Move to separate class
+     */
+    private boolean isControlA() {
+        return (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)) && Keyboard.isKeyDown(Keyboard.KEY_A);
     }
 
     private boolean isDeleteAll() {

@@ -10,42 +10,57 @@
 
 package net.bplaced.abzzezz.ui.uicomponents;
 
+import ga.abzzezz.util.logging.Logger;
+import net.bplaced.abzzezz.utils.MouseUtil;
 import net.bplaced.abzzezz.utils.RenderUtil;
 import net.bplaced.abzzezz.utils.ScissorUtil;
 import net.bplaced.abzzezz.utils.Util;
 import org.lwjgl.input.Mouse;
 
+import java.awt.*;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-public class ListView<E> implements UIComponent {
+public class ListView implements UIComponent {
 
-    private List<E> list;
-    private float xPos, yPos;
-    private int width, height;
-    private String title;
+    /*
+    TODO: More work
+     */
+    protected int scrollY;
+    private final List<ListViewElement> list;
+    private final float xPos;
+    private final float yPos;
+    private int width;
+    private final int height;
+    private final String title;
 
-    public ListView(List<E> list, float xPos, float yPos, int height, String title) {
-        this.list = list;
+    public ListView(List<Object> list, float xPos, float yPos, int height, String title) {
         this.xPos = xPos;
         this.yPos = yPos;
         this.height = height;
         this.width = textFont.getStringWidth(title);
         this.title = title;
+        this.list = new CopyOnWriteArrayList<>();
+        list.forEach(o -> this.list.add(new ListViewElement(o)));
     }
-
-    protected int scrollY;
 
     @Override
     public void drawComponent() {
+        int yBuffer = 0;
         RenderUtil.drawQuad(xPos, yPos, width, height, Util.mainColor);
         textFont.drawString(title, xPos, yPos - textFont.getHeight(), textColor);
 
-        int yBuffer = 0;
-
         ScissorUtil.enableScissor();
         ScissorUtil.scissor(xPos, yPos, width, height);
-        for (E entry : list) {
-            textFont.drawString(String.valueOf(entry), xPos, yPos + yBuffer + scrollY, textColor);
+
+        for (ListViewElement entry : list) {
+            float entryY = yBuffer + yPos + scrollY;
+
+            if(entry.isHovered()) RenderUtil.drawQuad(xPos, entryY, width, textFont.getHeight(), Color.LIGHT_GRAY);
+            textFont.drawString(entry.getObjectString(), xPos, entryY, textColor);
+
+
+            entry.setyPos(entryY);
             yBuffer += ((int) textFont.getHeight());
         }
         /**
@@ -54,10 +69,10 @@ public class ListView<E> implements UIComponent {
         if (Mouse.hasWheel() && yBuffer > height) {
             int wheel = Mouse.getDWheel() / 120;
             if (wheel < 0) {
-                if(!(scrollY > yBuffer))
+                if (!(scrollY > yBuffer))
                     scrollY += textFont.getHeight();
-            } else if(wheel > 0) {
-                if(!(scrollY < -yBuffer))
+            } else if (wheel > 0) {
+                if (!(scrollY < -yBuffer))
                     scrollY -= textFont.getHeight();
             }
         }
@@ -68,18 +83,64 @@ public class ListView<E> implements UIComponent {
     /**
      * Add list item. refreshes collection
      */
-    public void addToList(E item) {
-        this.list.add(item);
-        this.width = 100;
+    public void addToList(Object item) {
+        this.list.add(new ListViewElement(item));
     }
 
     @Override
     public void keyListener(int keyCode, char keyTyped) {
+    }
 
+    private onListViewElementClicked clickListener;
+
+    public void setClickListener(onListViewElementClicked clickListener) {
+        this.clickListener = clickListener;
     }
 
     @Override
     public void mouseListener(int mouseButton) {
+        list.forEach(listViewElement -> {
+            if (listViewElement.isHovered() && mouseButton == 0) {
+                if (clickListener != null) {
+                    clickListener.onItemClicked(list.indexOf(listViewElement), listViewElement);
+                } else {
+                    Logger.log("On item click listener for class " + getClass() + "not initialised", Logger.LogType.WARNING);
+                }
+            }
+        });
+    }
 
+    public interface onListViewElementClicked {
+        void onItemClicked(int index, ListViewElement item);
+    }
+
+    public class ListViewElement {
+
+        private Object object;
+        private float yPos;
+
+        public ListViewElement(Object o) {
+            this.object = o;
+        }
+
+        public Object getObject() {
+            return object;
+        }
+
+        public String getObjectString() {
+            return object.toString();
+        }
+
+        public void setyPos(float yPos) {
+            this.yPos = yPos;
+        }
+
+        public float getyPos() {
+            return yPos;
+        }
+
+        public boolean isHovered() {
+            return MouseUtil.mouseHovered(xPos, yPos, width, textFont.getHeight());
+        }
     }
 }

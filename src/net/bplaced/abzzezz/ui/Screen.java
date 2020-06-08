@@ -31,7 +31,8 @@ public abstract class Screen {
      *
      * @param buttonID
      */
-    public void buttonPressed(float buttonID) {}
+    public void buttonPressed(float buttonID) {
+    }
 
     /*
     Screen drawing - simple

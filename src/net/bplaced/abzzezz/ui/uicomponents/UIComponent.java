@@ -12,16 +12,24 @@ package net.bplaced.abzzezz.ui.uicomponents;
 
 import net.bplaced.abzzezz.EngineCore;
 import net.bplaced.abzzezz.utils.FontUtil;
+import net.bplaced.abzzezz.utils.Util;
 
 import java.awt.*;
 
 public interface UIComponent {
 
+    /**
+     * UIComponent interface. Add this to own ui components
+     */
+
     EngineCore engineCoreInstance = EngineCore.getInstance();
-    FontUtil textFont = new FontUtil("Roboto-Light", 20);
-    Color textColor = Color.BLACK;
+    FontUtil textFont = new FontUtil(Util.textFont, 20);
+    Color textColor = Util.textColor;
 
     void drawComponent();
+
     void keyListener(int keyCode, char keyTyped);
+
     void mouseListener(int mouseButton);
+
 }

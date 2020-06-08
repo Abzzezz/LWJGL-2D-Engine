@@ -19,6 +19,17 @@ import static org.lwjgl.opengl.GL11.*;
 public class RenderUtil {
 
 
+    /**
+     * Draws circle. If hovered returns the color (if color wheel mode enabled)
+     *
+     * @param xPos
+     * @param yPos
+     * @param radius
+     * @param color
+     * @return
+     */
+    static Color currentColor;
+
     public static void setupGL() {
         glPushMatrix();
         glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -36,7 +47,6 @@ public class RenderUtil {
         glPopAttrib();
         glPopMatrix();
     }
-
 
     public static void drawQuad(float xPos, float yPos, float width, float height, Color quadColor) {
         setupGL();
@@ -59,34 +69,22 @@ public class RenderUtil {
      * @param radius
      * @param circleColor
      */
-    public static void drawCircle(float xPos, float yPos, int radius, Color circleColor) {
+    public static void drawCircle(float xPos, float yPos, int radius, int lWidth, Color circleColor) {
         setupGL();
         glColor4f(circleColor.getRed() / 255.0F, circleColor.getGreen() / 255.0F, circleColor.getBlue() / 255.0F, circleColor.getAlpha() / 255.0F);
         glBegin(GL_POLYGON);
         {
-            drawCircle(xPos, yPos, radius, 3, false);
+            drawCircle(xPos, yPos, radius, lWidth, false);
         }
         glEnd();
         glEnable(GL_LINE_SMOOTH);
         glBegin(GL_LINE_LOOP);
         {
-            drawCircle(xPos, yPos, radius, 3, false);
-
+            drawCircle(xPos, yPos, radius, lWidth, false);
         }
         glEnd();
         endGL();
     }
-
-    /**
-     * Draws circle. If hovered returns the color (if color wheel mode enabled)
-     *
-     * @param xPos
-     * @param yPos
-     * @param radius
-     * @param color
-     * @return
-     */
-    static Color currentColor;
 
     /*
     TODO: Cleanup
@@ -101,7 +99,8 @@ public class RenderUtil {
             if (color) {
                 float[] hueColor = getLWJGLColor(getHue(ii));
                 glColor4f(hueColor[0], hueColor[1], hueColor[2], hueColor[3]);
-                if (MouseUtil.mouseHovered(xPos + x, yPos + y, lWidth) && Mouse.isButtonDown(0)) currentColor = getHue(ii);
+                if (MouseUtil.mouseHovered(xPos + x, yPos + y, lWidth) && Mouse.isButtonDown(0))
+                    currentColor = getHue(ii);
             }
             glVertex2f(x + xPos, y + yPos);
 
