@@ -74,13 +74,14 @@ public class RenderUtil {
         glColor4f(circleColor.getRed() / 255.0F, circleColor.getGreen() / 255.0F, circleColor.getBlue() / 255.0F, circleColor.getAlpha() / 255.0F);
         glBegin(GL_POLYGON);
         {
-            drawCircle(xPos, yPos, radius, lWidth, false);
+            drawCircle(xPos, yPos, radius);
         }
         glEnd();
         glEnable(GL_LINE_SMOOTH);
+        glLineWidth(lWidth);
         glBegin(GL_LINE_LOOP);
         {
-            drawCircle(xPos, yPos, radius, lWidth, false);
+            drawCircle(xPos, yPos, radius);
         }
         glEnd();
         endGL();
@@ -89,19 +90,13 @@ public class RenderUtil {
     /*
     TODO: Cleanup
      */
-    private static void drawCircle(float xPos, float yPos, int radius, int lWidth, boolean color) {
+    private static void drawCircle(float xPos, float yPos, int radius) {
         double theta = (2 * Math.PI / 360.0);
         double tangetial_factor = Math.tan(theta);//calculate the tangential factor
         double radial_factor = Math.cos(theta);//calculate the radial factor
         float x = radius;//we start at angle = 0
         float y = 0;
         for (int ii = 0; ii < 360; ii++) {
-            if (color) {
-                float[] hueColor = getLWJGLColor(getHue(ii));
-                glColor4f(hueColor[0], hueColor[1], hueColor[2], hueColor[3]);
-                if (MouseUtil.mouseHovered(xPos + x, yPos + y, lWidth) && Mouse.isButtonDown(0))
-                    currentColor = getHue(ii);
-            }
             glVertex2f(x + xPos, y + yPos);
 
             //calculate the tangential vector
@@ -126,23 +121,7 @@ public class RenderUtil {
         return new float[]{color.getRed() / 255.0F, color.getGreen() / 255.0F, color.getBlue() / 255.0F, color.getAlpha() / 255.0F};
     }
 
-    public static void drawColorWheel(float xPos, float yPos, int radius, int lWidth) {
-        setupGL();
-        glEnable(GL_LINE_SMOOTH);
-        glLineWidth(lWidth);
-        glBegin(GL_LINE_LOOP);
-        {
-            drawCircle(xPos, yPos, radius, lWidth, true);
-        }
-        glEnd();
-        endGL();
-    }
-
-    public static Color getCurrentColor() {
-        return currentColor;
-    }
-
-    private static Color getHue(float percent) {
+    public static Color getHue(float percent) {
         return Color.getHSBColor((percent / 360.0F), 1F, 1F);
     }
 

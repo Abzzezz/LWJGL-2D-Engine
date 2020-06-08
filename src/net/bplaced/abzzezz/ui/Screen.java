@@ -73,6 +73,6 @@ public abstract class Screen {
     }
 
     public Button getButtonByID(float id) {
-        return (Button) uiComponents.stream().filter(uiComponent -> uiComponent instanceof Button).filter(uiComponent -> ((Button) uiComponent).getId() == id).findFirst().get();
+        return (Button) uiComponents.stream().filter(uiComponent -> uiComponent instanceof Button && ((Button) uiComponent).getId() == id).findFirst().get();
     }
 }

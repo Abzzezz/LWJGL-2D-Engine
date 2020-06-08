@@ -10,6 +10,7 @@
 
 package net.bplaced.abzzezz.ui.uicomponents;
 
+import ga.abzzezz.util.logging.Logger;
 import net.bplaced.abzzezz.utils.MouseUtil;
 import net.bplaced.abzzezz.utils.RenderUtil;
 import net.bplaced.abzzezz.utils.Util;
@@ -66,9 +67,22 @@ public class Button implements UIComponent {
      *
      * @param mouseButton
      */
+    private ButtonPressed buttonPressed;
+
+    public void setButtonPressed(Button.ButtonPressed buttonPressed) {
+        this.buttonPressed = buttonPressed;
+    }
+
     @Override
     public void mouseListener(int mouseButton) {
         if (buttonHovered() && mouseButton == 0) engineCoreInstance.getScreen().buttonPressed(getId());
+
+        if(buttonHovered()) {
+            if(buttonPressed != null)
+                buttonPressed.onButtonPressed(mouseButton);
+            else
+                Logger.log("Button pressed handler not initialised", Logger.LogType.INFO);
+        }
     }
 
     public float getXPos() {
@@ -77,5 +91,10 @@ public class Button implements UIComponent {
 
     public float getYPos() {
         return yPos;
+    }
+
+    public interface ButtonPressed {
+
+        void onButtonPressed(int mouseButton);
     }
 }

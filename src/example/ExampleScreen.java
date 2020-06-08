@@ -73,7 +73,13 @@ public class ExampleScreen extends Screen {
         //Add listview
         getUiComponents().add(listView);
         //Add colorchooser
-        getUiComponents().add(new ColorChooser(xPos, 100, 40));
+
+        ColorChooser colorChooser = new ColorChooser(xPos + 200, 100, 70, "Example drawer button", -1);
+        colorChooser.setColorSelectedListener(color -> {
+            System.out.println("Color selected:" + color);
+        });
+        getUiComponents().add(colorChooser);
+
         super.init();
     }
 
