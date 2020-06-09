@@ -11,18 +11,18 @@
 package net.bplaced.abzzezz.ui.uicomponents;
 
 import ga.abzzezz.util.data.Clipboard;
-import net.bplaced.abzzezz.utils.MouseUtil;
-import net.bplaced.abzzezz.utils.RenderUtil;
-import net.bplaced.abzzezz.utils.ScissorUtil;
-import net.bplaced.abzzezz.utils.Util;
+import net.bplaced.abzzezz.utils.*;
 import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class TextField implements UIComponent {
 
-    private final StringBuilder backupText = new StringBuilder();
+    private final List<String> backupText = new CopyOnWriteArrayList();
     private final StringBuilder displayText = new StringBuilder();
     private final float xPos;
     private final float yPos;
@@ -30,9 +30,10 @@ public class TextField implements UIComponent {
     private final int height;
     private boolean clicked, selectedAll;
     private final String name;
+    private final FontUtil fontUtil;
 
     /*
-    TODO: More work, Adding to clipboard etc. Text moving, selecting
+    TODO: More work, Adding to clipboard etc. Text moving, selecting. Make box able to keep up
      */
     public TextField(float xPos, float yPos, String name) {
         this.xPos = xPos;
@@ -41,6 +42,7 @@ public class TextField implements UIComponent {
         this.width = 100;
         this.height = 20;
         this.name = name;
+        this.fontUtil = new FontUtil(Util.textFont, width / 7);
     }
 
     public TextField(float xPos, float yPos, int width, int height, String name) {
@@ -49,6 +51,7 @@ public class TextField implements UIComponent {
         this.width = width;
         this.height = height;
         this.name = name;
+        this.fontUtil = new FontUtil(Util.textFont, width / 7);
     }
 
     @Override
@@ -56,7 +59,7 @@ public class TextField implements UIComponent {
         ScissorUtil.enableScissor();
         ScissorUtil.scissor(xPos, yPos, width, height);
         RenderUtil.drawQuad(xPos, yPos, width, height, clicked ? Util.mainColor.darker() : Util.mainColor);
-        textFont.drawString(displayText.toString(), xPos, yPos, selectedAll ? Color.LIGHT_GRAY : textColor);
+        fontUtil.drawString(displayText.toString(), xPos, yPos + height / 2 - fontUtil.getHeight() / 2, selectedAll ? Color.LIGHT_GRAY : textColor);
         ScissorUtil.disableScissor();
         textFont.drawString(name, xPos, yPos - height, textColor);
     }
@@ -98,21 +101,20 @@ public class TextField implements UIComponent {
                     If backups lengh is 0 then stop restoring old data.
                      */
                     displayText.delete(getLastDisplayChar()[0], getLastDisplayChar()[1]);
-                    if (!(backupText.length() == 0)) {
-                        int[] bounds = {backupText.length() - 1, backupText.length()};
-                        displayText.insert(0, backupText.substring(bounds[0], bounds[1]));
-                        backupText.delete(bounds[0], bounds[1]);
+                    if (!(backupText.size() == 0)) {
+                        displayText.insert(0, backupText.get(backupText.size() - 1));
+                        backupText.remove(backupText.size() - 1);
                     }
                 }
             } else {
                 //If text out of bounds append old characters to backuptext and delete from displayed string
-                if (textFont.getStringWidth(displayText.toString()) >= width - textFont.getStringWidth(String.valueOf(keyTyped))) {
-                    backupText.append(displayText.substring(0, 1));
+                if (fontUtil.getStringWidth(displayText.toString()) >= (width - width / 5)) {
+                    backupText.add(displayText.substring(0, 1));
                     displayText.delete(0, 1);
                 }
 
                 //Append typed char
-                if (!(keyCode == Keyboard.KEY_LSHIFT) && !(keyCode == Keyboard.KEY_RSHIFT))
+                if (!(keyCode == Keyboard.KEY_LSHIFT) && !(keyCode == Keyboard.KEY_RSHIFT) && !(keyCode == Keyboard.KEY_RCONTROL) && !(keyCode == Keyboard.KEY_LCONTROL))
                     displayText.append(keyTyped);
             }
         }
@@ -120,7 +122,7 @@ public class TextField implements UIComponent {
 
     private void deleteAllText() {
         displayText.delete(0, displayText.length());
-        backupText.delete(0, backupText.length());
+        backupText.clear();
     }
 
     private int[] getLastDisplayChar() {
@@ -157,7 +159,12 @@ public class TextField implements UIComponent {
      * @return
      */
     public String toString() {
-        return backupText.toString() + displayText.toString();
+        StringBuilder backupOut = new StringBuilder();
+        backupText.forEach(s -> {
+            backupOut.append(s);
+        });
+
+        return backupOut.toString() + displayText.toString();
     }
 
     public boolean isClicked() {

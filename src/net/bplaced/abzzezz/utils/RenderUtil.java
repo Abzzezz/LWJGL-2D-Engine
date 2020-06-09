@@ -10,8 +10,6 @@
 
 package net.bplaced.abzzezz.utils;
 
-import org.lwjgl.input.Mouse;
-
 import java.awt.*;
 
 import static org.lwjgl.opengl.GL11.*;

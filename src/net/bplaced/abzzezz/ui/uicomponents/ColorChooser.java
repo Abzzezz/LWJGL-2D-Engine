@@ -10,14 +10,10 @@
 
 package net.bplaced.abzzezz.ui.uicomponents;
 
-import ga.abzzezz.util.easing.Bounce;
-import ga.abzzezz.util.easing.Quint;
 import ga.abzzezz.util.easing.Sine;
 import ga.abzzezz.util.math.AnimationUtil;
-import net.bplaced.abzzezz.utils.FontUtil;
 import net.bplaced.abzzezz.utils.MouseUtil;
 import net.bplaced.abzzezz.utils.RenderUtil;
-import net.bplaced.abzzezz.utils.Util;
 
 import java.awt.*;
 
@@ -30,28 +26,14 @@ public class ColorChooser implements UIComponent {
     private final int size, lineWidth;
     private final float xPos;
     private final float yPos;
-
-
-    /*
-    TODO: Fix auto opening
-     */
-
-    private FontUtil fontUtil;
     private AnimationUtil animationUtil;
 
-    public ColorChooser(float xPos, float yPos, int size, String text, float buttonID) {
+    public ColorChooser(float xPos, float yPos, int size) {
         this.size = size;
         this.xPos = xPos;
         this.yPos = yPos;
-        this.fontUtil = new FontUtil(Util.textFont, size / 5);
         this.lineWidth = size / 5;
-        this.animationUtil = new AnimationUtil(Sine.class, 0, 0, size, 1, true, false);
-        Button button = new Button(buttonID, text, xPos, yPos);
-        button.setButtonPressed(mouseButton -> {
-            clicked = !clicked;
-            animationUtil.reversed = !clicked;
-        });
-        this.engineCoreInstance.getScreen().getUiComponents().add(button);
+        this.animationUtil = new AnimationUtil(Sine.class, 0, 0, size, 1, true, true);
     }
 
     boolean clicked;
@@ -59,7 +41,9 @@ public class ColorChooser implements UIComponent {
     @Override
     public void drawComponent() {
         animationUtil.animate();
+
         drawColorWheel(xPos, yPos, animationUtil.getInt(), lineWidth);
+        RenderUtil.drawCircle(xPos, yPos, size / 10, 2, Color.BLACK);
 
         if(animationUtil.velocity >= size - 10) RenderUtil.drawCircle(xPos + xy[0], yPos + xy[1], 5, 1, new Color(0, 0, 0, 50));
     }
@@ -108,7 +92,7 @@ public class ColorChooser implements UIComponent {
     private ColorSelectedListener colorSelectedListener;
 
     private boolean colorChooserHovered(float x, float y) {
-        return MouseUtil.mouseHovered(xPos + x, yPos + y, 2);
+        return MouseUtil.mouseHovered(xPos + x, yPos + y, 1.205);
     }
 
     public void setColorSelectedListener(ColorChooser.ColorSelectedListener colorSelectedListener) {
@@ -121,32 +105,30 @@ public class ColorChooser implements UIComponent {
 
     @Override
     public void mouseListener(int mouseButton) {
-        double theta = (2 * Math.PI / 360.0);
-        double tangential_factor = Math.tan(theta);//calculate the tangential factor
-        double radial_factor = Math.cos(theta);//calculate the radial factor
-        float x = size;//we start at angle = 0
-        float y = 0;
-        for (int ii = 0; ii < 360; ii++) {
-            if (colorChooserHovered(x, y)) {
-                if (colorSelectedListener != null) colorSelectedListener.onColorSelected(RenderUtil.getHue(ii));
-                xy[0] = x;
-                xy[1] = y;
+        if(MouseUtil.mouseHovered(xPos, yPos, size / 10) && mouseButton == 0) {
+            clicked = !clicked;
+            animationUtil.reversed = !clicked;
+        }
+
+        if(clicked) {
+            double theta = (2 * Math.PI / 360.0);
+            double tangential_factor = Math.tan(theta);//calculate the tangential factor
+            double radial_factor = Math.cos(theta);//calculate the radial factor
+            float x = size;//we start at angle = 0
+            float y = 0;
+            for (int ii = 0; ii < 360; ii++) {
+                if (colorChooserHovered(x, y)) {
+                    if (colorSelectedListener != null) colorSelectedListener.onColorSelected(RenderUtil.getHue(ii));
+                    xy[0] = x;
+                    xy[1] = y;
+                }
+                float tx = -y;
+                float ty = x;
+                x += tx * tangential_factor;
+                y += ty * tangential_factor;
+                x *= radial_factor;
+                y *= radial_factor;
             }
-            //calculate the tangential vector
-            //remember, the radial vector is (x, y)
-            //to get the tangential vector we flip those coordinates and negate one of them
-
-            float tx = -y;
-            float ty = x;
-
-            //add the tangential vector
-
-            x += tx * tangential_factor;
-            y += ty * tangential_factor;
-
-            //correct using the radial factor
-            x *= radial_factor;
-            y *= radial_factor;
         }
     }
 

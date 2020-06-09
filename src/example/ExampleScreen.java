@@ -61,7 +61,7 @@ public class ExampleScreen extends Screen {
         });
 
         //init textfield
-        this.textField = new TextField(xPos, 100, "Example Text box");
+        this.textField = new TextField(xPos, 100, 200, 40, "Example Text box");
         this.fontUtil = new FontUtil("Roboto-Light", 20);
 
         //Add new button
@@ -74,7 +74,7 @@ public class ExampleScreen extends Screen {
         getUiComponents().add(listView);
         //Add colorchooser
 
-        ColorChooser colorChooser = new ColorChooser(xPos + 200, 100, 70, "Example drawer button", -1);
+        ColorChooser colorChooser = new ColorChooser(xPos + 200, 100, 70);
         colorChooser.setColorSelectedListener(color -> {
             System.out.println("Color selected:" + color);
         });
