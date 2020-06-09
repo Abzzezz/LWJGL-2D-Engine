@@ -10,20 +10,17 @@
 
 package net.bplaced.abzzezz.ui.uicomponents;
 
-import ga.abzzezz.util.data.Clipboard;
 import net.bplaced.abzzezz.utils.*;
 import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-
 public class TextField implements UIComponent {
 
-    private final List<String> backupText = new CopyOnWriteArrayList();
-    private final StringBuilder displayText = new StringBuilder();
+    private final List<String> backupText = new CopyOnWriteArrayList<>();
+    private final List<String> displayText = new CopyOnWriteArrayList<>();
     private final float xPos;
     private final float yPos;
     private final int width;
@@ -56,10 +53,10 @@ public class TextField implements UIComponent {
 
     @Override
     public void drawComponent() {
+        RenderUtil.drawQuad(xPos, yPos, width, height, clicked ? Util.mainColor.darker() : Util.mainColor);
         ScissorUtil.enableScissor();
         ScissorUtil.scissor(xPos, yPos, width, height);
-        RenderUtil.drawQuad(xPos, yPos, width, height, clicked ? Util.mainColor.darker() : Util.mainColor);
-        fontUtil.drawString(displayText.toString(), xPos, yPos + height / 2 - fontUtil.getHeight() / 2, selectedAll ? Color.LIGHT_GRAY : textColor);
+        fontUtil.drawString(getDisplayString(), xPos, yPos + height / 2 - fontUtil.getHeight() / 2, selectedAll ? Color.LIGHT_GRAY : textColor);
         ScissorUtil.disableScissor();
         textFont.drawString(name, xPos, yPos - height, textColor);
     }
@@ -85,7 +82,7 @@ public class TextField implements UIComponent {
             }
             //TODO: Fix clipboard spamming. - Overflow
             if (isControlV()) {
-                displayText.append(Clipboard.getClipboard());
+                //ADD
                 return;
             }
 
@@ -96,37 +93,38 @@ public class TextField implements UIComponent {
                     deleteAllText();
                     return;
                 }
-                if (!(displayText.length() == 0)) {
+                if (!(displayText.size() == 0)) {
                     /*
                     If backups lengh is 0 then stop restoring old data.
                      */
-                    displayText.delete(getLastDisplayChar()[0], getLastDisplayChar()[1]);
+                    displayText.remove(displayText.size() - 1);
                     if (!(backupText.size() == 0)) {
-                        displayText.insert(0, backupText.get(backupText.size() - 1));
+                        displayText.add(0, backupText.get(backupText.size() - 1));
                         backupText.remove(backupText.size() - 1);
                     }
                 }
             } else {
                 //If text out of bounds append old characters to backuptext and delete from displayed string
-                if (fontUtil.getStringWidth(displayText.toString()) >= (width - width / 5)) {
-                    backupText.add(displayText.substring(0, 1));
-                    displayText.delete(0, 1);
+                boolean b = !(keyCode == Keyboard.KEY_LSHIFT) && !(keyCode == Keyboard.KEY_RSHIFT) && !(keyCode == Keyboard.KEY_RCONTROL) && !(keyCode == Keyboard.KEY_LCONTROL);
+
+                if (displayText.size() > width / fontUtil.getStringWidth("a") && b) {
+                    backupText.add(displayText.get(0));
+                    displayText.remove(0);
                 }
 
-                //Append typed char
-                if (!(keyCode == Keyboard.KEY_LSHIFT) && !(keyCode == Keyboard.KEY_RSHIFT) && !(keyCode == Keyboard.KEY_RCONTROL) && !(keyCode == Keyboard.KEY_LCONTROL))
-                    displayText.append(keyTyped);
+                if (b)
+                    displayText.add(String.valueOf(keyTyped));
             }
         }
     }
 
-    private void deleteAllText() {
-        displayText.delete(0, displayText.length());
-        backupText.clear();
+    private String getDisplayString() {
+        return String.join("\t", displayText);
     }
 
-    private int[] getLastDisplayChar() {
-        return new int[]{displayText.length() - 1, displayText.length()};
+    private void deleteAllText() {
+        displayText.clear();
+        backupText.clear();
     }
 
     /**
@@ -160,11 +158,10 @@ public class TextField implements UIComponent {
      */
     public String toString() {
         StringBuilder backupOut = new StringBuilder();
-        backupText.forEach(s -> {
-            backupOut.append(s);
-        });
+        backupText.forEach(s -> backupOut.append(s));
+        displayText.forEach(character -> backupOut.append(character));
 
-        return backupOut.toString() + displayText.toString();
+        return backupOut.toString();
     }
 
     public boolean isClicked() {
