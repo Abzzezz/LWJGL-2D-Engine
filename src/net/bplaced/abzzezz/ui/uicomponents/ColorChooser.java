@@ -33,10 +33,14 @@ public class ColorChooser implements UIComponent {
         this.xPos = xPos;
         this.yPos = yPos;
         this.lineWidth = size / 5;
-        this.animationUtil = new AnimationUtil(Sine.class, 0, 0, size, 1, true, true);
     }
 
     boolean clicked;
+
+    @Override
+    public void initComponent() {
+        this.animationUtil = new AnimationUtil(Sine.class, 0, 0, size, 1, true, true);
+    }
 
     @Override
     public void drawComponent() {

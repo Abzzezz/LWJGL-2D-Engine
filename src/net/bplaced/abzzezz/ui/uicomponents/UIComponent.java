@@ -26,6 +26,9 @@ public interface UIComponent {
     FontUtil textFont = new FontUtil(Util.textFont, 20);
     Color textColor = Util.textColor;
 
+
+    void initComponent();
+
     void drawComponent();
 
     void keyListener(int keyCode, char keyTyped);

@@ -49,6 +49,11 @@ public class Button implements UIComponent {
         return new float[]{textFont.getStringWidth(text), textFont.getHeight()};
     }
 
+    @Override
+    public void initComponent() {
+
+    }
+
     /**
      * Size is dependent on text length
      */

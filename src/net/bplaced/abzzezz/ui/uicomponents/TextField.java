@@ -27,7 +27,7 @@ public class TextField implements UIComponent {
     private final int height;
     private boolean clicked, selectedAll;
     private final String name;
-    private final FontUtil fontUtil;
+    private FontUtil fontUtil;
 
     /*
     TODO: More work, Adding to clipboard etc. Text moving, selecting. Make box able to keep up
@@ -39,7 +39,6 @@ public class TextField implements UIComponent {
         this.width = 100;
         this.height = 20;
         this.name = name;
-        this.fontUtil = new FontUtil(Util.textFont, width / 7);
     }
 
     public TextField(float xPos, float yPos, int width, int height, String name) {
@@ -48,7 +47,11 @@ public class TextField implements UIComponent {
         this.width = width;
         this.height = height;
         this.name = name;
-        this.fontUtil = new FontUtil(Util.textFont, width / 7);
+    }
+
+    @Override
+    public void initComponent() {
+        fontUtil = new FontUtil(Util.textFont, width / 7);
     }
 
     @Override

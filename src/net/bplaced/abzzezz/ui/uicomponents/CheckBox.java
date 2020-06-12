@@ -24,14 +24,13 @@ public class CheckBox implements UIComponent {
     private float xPos, yPos;
     private int size;
     private String text;
-    private final AnimationUtil animationUtil;
+    private AnimationUtil animationUtil;
 
     public CheckBox(float xPos, float yPos, int size, String text) {
         this.xPos = xPos;
         this.yPos = yPos;
         this.size = size;
         this.text = text;
-        this.animationUtil = new AnimationUtil(Quint.class, 0, 0, size / 2, 1, true, false);
     }
 
     public CheckBox(boolean checked, float xPos, float yPos, int size, String text) {
@@ -40,7 +39,6 @@ public class CheckBox implements UIComponent {
         this.yPos = yPos;
         this.size = size;
         this.text = text;
-        this.animationUtil = new AnimationUtil(Quint.class, 0, 0, size / 2, 1, true, false);
     }
 
     public CheckBox(boolean checked, float xPos, float yPos, String text) {
@@ -50,7 +48,6 @@ public class CheckBox implements UIComponent {
         this.text = text;
         //Auto set
         this.size = (int) textFont.getHeight();
-        this.animationUtil = new AnimationUtil(Quint.class, 0, 0, size / 2, 1, true, false);
     }
 
     public CheckBox(float xPos, float yPos, String text) {
@@ -59,6 +56,10 @@ public class CheckBox implements UIComponent {
         this.text = text;
         //Auto set
         this.size = (int) textFont.getHeight();
+    }
+
+    @Override
+    public void initComponent() {
         this.animationUtil = new AnimationUtil(Quint.class, 0, 0, size / 2, 1, true, false);
     }
 

@@ -16,15 +16,18 @@ import org.lwjgl.opengl.Display;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class Screen {
 
-    private final List<UIComponent> uiComponents = new ArrayList<>();
+    private final List<UIComponent> uiComponents = new CopyOnWriteArrayList<>();
 
     /**
      * Int method to add things like buttons etc.
      */
-    public void init() {}
+    public void init() {
+        this.initComponents();
+    }
 
     /**
      * Gets called when button is pressed then looks for action event
@@ -33,6 +36,8 @@ public abstract class Screen {
      */
     public void buttonPressed(float buttonID) {
     }
+
+    private void initComponents() {uiComponents.forEach(UIComponent::initComponent);}
 
     /*
     Screen drawing - simple
