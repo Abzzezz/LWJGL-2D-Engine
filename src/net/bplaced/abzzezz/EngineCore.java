@@ -15,6 +15,7 @@ import net.bplaced.abzzezz.file.CustomFile;
 import net.bplaced.abzzezz.file.FileManager;
 import net.bplaced.abzzezz.ui.Screen;
 import net.bplaced.abzzezz.utils.FontUtil;
+import net.bplaced.abzzezz.utils.RenderUtil;
 import net.bplaced.abzzezz.utils.Util;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
@@ -22,6 +23,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.glu.GLU;
 
 import java.awt.*;
 import java.io.File;
@@ -97,8 +99,6 @@ public class EngineCore {
         /*
         Create directory if it does not exists
          */
-        if (!mainDir.exists()) mainDir.mkdir();
-
         this.fileManager = new FileManager();
     }
 
@@ -116,6 +116,7 @@ public class EngineCore {
         Logger.log("Font Path: " + fontDir, Logger.LogType.INFO);
         Logger.log("Loading files", Logger.LogType.INFO);
 
+        if (!mainDir.exists()) mainDir.mkdir();
         /*
         Loads files
         TODO: Add more handlers
@@ -136,7 +137,6 @@ public class EngineCore {
     private void run(int width, int height) {
         initGL(width, height);
         while (true) {
-            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
             update();
             Display.update();
             Display.sync(fpsSync);
@@ -166,28 +166,41 @@ public class EngineCore {
         Init first screen
          */
         screen.init();
+
+        //Enable Textures and configure
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glShadeModel(GL11.GL_SMOOTH);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glDisable(GL11.GL_LIGHTING);
-
-        GL11.glClearColor(Util.backgroundColor.getRed() / 255.0F, Util.backgroundColor.getGreen() / 255.0F, Util.backgroundColor.getBlue() / 255.0F, Util.backgroundColor.getAlpha() / 255.0F);
-        GL11.glClearDepth(1);
+        GL11.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        GL11.glClearDepth(1.0f);
+        GL11.glViewport(0,0,width,height);
+        //Enable Blend
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glViewport(0, 0, width, height);
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-        GL11.glMatrixMode(GL11.GL_PROJECTION);
-        GL11.glLoadIdentity();
-        GL11.glOrtho(0, width, height, 0, 1, -1);
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        GL11.glHint(GL11.GL_PERSPECTIVE_CORRECTION_HINT, GL11.GL_NICEST);
     }
 
     /**
      * Update Method
      */
     private void update() {
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        GL11.glLoadIdentity();
+        GL11.glOrtho(0, width, height, 0, 0.0f, 1.0f);
+
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        GL11.glLoadIdentity();
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+        GL11.glLoadIdentity();
         screen.drawScreen();
+
+
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        GL11.glLoadIdentity();
+        GLU.gluPerspective(45.0f, ((float) width / (float) height), 100.0f, 0.0f);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        GL11.glLoadIdentity();
+        screen.drawShader();
+
 
         while (Mouse.next()) {
             if (Mouse.getEventButtonState()) screen.mousePressed(Mouse.getEventButton());

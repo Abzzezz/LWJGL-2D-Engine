@@ -46,6 +46,8 @@ public abstract class Screen {
         uiComponents.forEach(UIComponent::drawComponent);
     }
 
+
+    public void drawShader() {}
     /**
      * Gets called if mouse button down
      *

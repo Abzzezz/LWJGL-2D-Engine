@@ -12,19 +12,17 @@ package example;
 
 import ga.abzzezz.util.logging.Logger;
 import net.bplaced.abzzezz.EngineCore;
-import net.bplaced.abzzezz.ui.uicomponents.*;
 import net.bplaced.abzzezz.ui.Screen;
 import net.bplaced.abzzezz.ui.uicomponents.Button;
 import net.bplaced.abzzezz.ui.uicomponents.TextField;
+import net.bplaced.abzzezz.ui.uicomponents.*;
 import net.bplaced.abzzezz.utils.FontUtil;
+import net.bplaced.abzzezz.utils.GLSLShaderUtil;
 import net.bplaced.abzzezz.utils.RenderUtil;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Example Class to understand how to make screens
@@ -44,12 +42,13 @@ public class ExampleScreen extends Screen {
     int xPos = 100;
 
     private TextField textField;
+
     @Override
     public void init() {
         Logger.log("Refreshed", Logger.LogType.INFO);
 
         //Set arraylist
-        ArrayList arrayList= new ArrayList();
+        ArrayList arrayList = new ArrayList();
         arrayList.add("Example element");
         arrayList.add("Example element 2");
         //Create listview object
@@ -79,18 +78,18 @@ public class ExampleScreen extends Screen {
             System.out.println("Color selected:" + color);
         });
         getUiComponents().add(colorChooser);
+        glslShaderUtil = new GLSLShaderUtil("", "");
         super.init();
     }
 
     /**
      * Check if button ID == Button you denier then run action
+     *
      * @param buttonID
      */
     @Override
     public void buttonPressed(float buttonID) {
-        if(buttonID == 1) {
-            EngineCore.getInstance().setScreen(new ExampleScreen2());
-        }
+        if (buttonID == 1) EngineCore.getInstance().setScreen(new ExampleScreen2());
         super.buttonPressed(buttonID);
     }
 
@@ -99,7 +98,7 @@ public class ExampleScreen extends Screen {
         /**
          * Debug refresh
          */
-        if(keyCode == Keyboard.KEY_F5) {
+        if (keyCode == Keyboard.KEY_F5) {
             EngineCore.getInstance().setScreen(this);
         }
         super.keyTyped(keyCode, keyTyped);
@@ -108,10 +107,19 @@ public class ExampleScreen extends Screen {
     /**
      * Draw screen and render Font + a Quad
      */
+
+    GLSLShaderUtil glslShaderUtil;
+
     @Override
     public void drawScreen() {
         fontUtil.drawString("This is a example string at 10, 10", xPos, 10, Color.BLACK);
         RenderUtil.drawQuad(xPos, 500, 40, 40, Color.BLUE);
         super.drawScreen();
+    }
+
+    @Override
+    public void drawShader() {
+        glslShaderUtil.draw();
+        super.drawShader();
     }
 }

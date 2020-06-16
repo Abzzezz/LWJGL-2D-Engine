@@ -41,11 +41,11 @@ public class ListView implements UIComponent {
         this.width = textFont.getStringWidth(title);
         this.title = title;
         this.list = new CopyOnWriteArrayList<>();
+        list.forEach(o -> this.list.add(new ListViewElement(o)));
     }
 
     @Override
     public void initComponent() {
-        list.forEach(o -> this.list.add(new ListViewElement(o)));
     }
 
     @Override

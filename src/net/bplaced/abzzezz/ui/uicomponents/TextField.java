@@ -86,6 +86,7 @@ public class TextField implements UIComponent {
             //TODO: Fix clipboard spamming. - Overflow
             if (isControlV()) {
                 //ADD
+
                 return;
             }
 

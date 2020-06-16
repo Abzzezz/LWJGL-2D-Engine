@@ -17,16 +17,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class RenderUtil {
 
 
-    /**
-     * Draws circle. If hovered returns the color (if color wheel mode enabled)
-     *
-     * @param xPos
-     * @param yPos
-     * @param radius
-     * @param color
-     * @return
-     */
-    static Color currentColor;
+
 
     public static void setupGL() {
         glPushMatrix();

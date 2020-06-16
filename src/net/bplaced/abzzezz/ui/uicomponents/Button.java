@@ -21,6 +21,7 @@ public class Button implements UIComponent {
     private final float xPos;
     private final float yPos;
     private final float id;
+    private final int width, height;
 
     /**
      * Simple button. Buttons can be added just use this as a parent
@@ -35,6 +36,17 @@ public class Button implements UIComponent {
         this.text = text;
         this.xPos = xPos;
         this.yPos = yPos;
+        this.width = textFont.getStringWidth(text);
+        this.height = (int) textFont.getHeight();
+    }
+
+    public Button(float id, String text, float xPos, float yPos, int width, int height) {
+        this.id = id;
+        this.text = text;
+        this.xPos = xPos;
+        this.yPos = yPos;
+        this.width = width;
+        this.height = height;
     }
 
     public boolean buttonHovered() {
@@ -45,13 +57,12 @@ public class Button implements UIComponent {
         return id;
     }
 
-    public float[] getDimensions() {
-        return new float[]{textFont.getStringWidth(text), textFont.getHeight()};
+    public int[] getDimensions() {
+        return new int[]{width, height};
     }
 
     @Override
     public void initComponent() {
-
     }
 
     /**
@@ -60,7 +71,7 @@ public class Button implements UIComponent {
     @Override
     public void drawComponent() {
         RenderUtil.drawQuad(xPos, yPos, getDimensions()[0], getDimensions()[1], buttonHovered() ? Util.mainColor.darker() : Util.mainColor);
-        textFont.drawString(text, xPos, yPos, buttonHovered() ? textColor.brighter() : textColor);
+        textFont.drawString(text, xPos + width / 2 - textFont.getStringWidth(getText()) / 2, yPos, buttonHovered() ? textColor.brighter() : textColor);
     }
 
     @Override
@@ -82,9 +93,9 @@ public class Button implements UIComponent {
     public void mouseListener(int mouseButton) {
         if (buttonHovered() && mouseButton == 0) engineCoreInstance.getScreen().buttonPressed(getId());
 
-        if(buttonHovered()) {
-            if(buttonPressed != null)
-                buttonPressed.onButtonPressed(mouseButton);
+        if (buttonHovered()) {
+            if (buttonPressed != null)
+                buttonPressed.onButtonPressed(mouseButton, this);
             else
                 Logger.log("Button pressed handler not initialised", Logger.LogType.INFO);
         }
@@ -98,8 +109,12 @@ public class Button implements UIComponent {
         return yPos;
     }
 
-    public interface ButtonPressed {
+    public String getText() {
+        return text;
+    }
 
-        void onButtonPressed(int mouseButton);
+
+    public interface ButtonPressed {
+        void onButtonPressed(int mouseButton, Button button);
     }
 }
