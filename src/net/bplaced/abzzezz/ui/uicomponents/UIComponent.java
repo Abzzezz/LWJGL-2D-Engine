@@ -35,4 +35,9 @@ public interface UIComponent {
 
     void mouseListener(int mouseButton);
 
+    /**
+     * Used for drawing shaders on objects
+     */
+    void drawShader();
+
 }

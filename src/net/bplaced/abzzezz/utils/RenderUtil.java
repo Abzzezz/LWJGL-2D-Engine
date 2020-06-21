@@ -10,13 +10,13 @@
 
 package net.bplaced.abzzezz.utils;
 
+import ga.abzzezz.util.math.MathUtil;
+
 import java.awt.*;
 
 import static org.lwjgl.opengl.GL11.*;
 
 public class RenderUtil {
-
-
 
 
     public static void setupGL() {
@@ -118,5 +118,36 @@ public class RenderUtil {
         glVertex2f(xPos, yPos);
         glVertex2f(xPos, yPos + height);
         glVertex2f(xPos + width, yPos + height);
+    }
+
+    public static void drawRoundedQuad(float xPos, float yPos, float width, float height, int radius, Color quadColor) {
+        setupGL();
+        glColor4f(quadColor.getRed() / 255.0F, quadColor.getGreen() / 255.0F, quadColor.getBlue() / 255.0F, quadColor.getAlpha() / 255.0F);
+        glEnable(GL_LINE_SMOOTH);
+        glLineWidth(3);
+        glBegin(GL_LINE_LOOP);
+        {
+            int deg = 45;
+            for (int i = 0; i < deg; i++) {
+                glVertex2d(xPos + radius - MathUtil.sinForCircle(i, radius), yPos + MathUtil.cosForCircle(i, radius));
+            }
+
+            for (int i = deg; i > 0; i--) {
+                glVertex2d(xPos + radius - MathUtil.sinForCircle(i, radius), yPos + height + MathUtil.cosForCircle(i, radius));
+            }
+
+            for (int i = 0; i < deg; i++) {
+                glVertex2d(xPos - radius + width + MathUtil.sinForCircle(i, radius), yPos + height + MathUtil.cosForCircle(i, radius));
+            }
+
+            for (int i = deg; i > 0; i--) {
+                glVertex2d(xPos - radius + width + MathUtil.sinForCircle(i, radius), yPos + MathUtil.cosForCircle(i, radius));
+            }
+
+        }
+        glEnd();
+
+
+        endGL();
     }
 }

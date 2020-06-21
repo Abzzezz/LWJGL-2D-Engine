@@ -49,7 +49,8 @@ public class ColorChooser implements UIComponent {
         drawColorWheel(xPos, yPos, animationUtil.getInt(), lineWidth);
         RenderUtil.drawCircle(xPos, yPos, size / 10, 2, Color.BLACK);
 
-        if(animationUtil.velocity >= size - 10) RenderUtil.drawCircle(xPos + xy[0], yPos + xy[1], 5, 1, new Color(0, 0, 0, 50));
+        if (animationUtil.velocity >= size - 10)
+            RenderUtil.drawCircle(xPos + xy[0], yPos + xy[1], 5, 1, new Color(0, 0, 0, 50));
     }
 
     /**
@@ -109,12 +110,12 @@ public class ColorChooser implements UIComponent {
 
     @Override
     public void mouseListener(int mouseButton) {
-        if(MouseUtil.mouseHovered(xPos, yPos, size / 10) && mouseButton == 0) {
+        if (MouseUtil.mouseHovered(xPos, yPos, size / 10) && mouseButton == 0) {
             clicked = !clicked;
             animationUtil.reversed = !clicked;
         }
 
-        if(clicked) {
+        if (clicked) {
             double theta = (2 * Math.PI / 360.0);
             double tangential_factor = Math.tan(theta);//calculate the tangential factor
             double radial_factor = Math.cos(theta);//calculate the radial factor
@@ -136,7 +137,15 @@ public class ColorChooser implements UIComponent {
         }
     }
 
-    private float xy[] = new float[2];
+    /**
+     * Used for drawing shaders on objects
+     */
+    @Override
+    public void drawShader() {
+
+    }
+
+    private final float[] xy = new float[2];
 
     public interface ColorSelectedListener {
         void onColorSelected(Color color);

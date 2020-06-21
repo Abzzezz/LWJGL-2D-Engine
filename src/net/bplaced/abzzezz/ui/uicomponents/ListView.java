@@ -30,7 +30,7 @@ public class ListView implements UIComponent {
     private final List<ListViewElement> list;
     private final float xPos;
     private final float yPos;
-    private int width;
+    private final int width;
     private final int height;
     private final String title;
 
@@ -60,7 +60,7 @@ public class ListView implements UIComponent {
         for (ListViewElement entry : list) {
             float entryY = yBuffer + yPos + scrollY;
 
-            if(entry.isHovered()) RenderUtil.drawQuad(xPos, entryY, width, textFont.getHeight(), Color.LIGHT_GRAY);
+            if (entry.isHovered()) RenderUtil.drawQuad(xPos, entryY, width, textFont.getHeight(), Color.LIGHT_GRAY);
             textFont.drawString(entry.getObjectString(), xPos, entryY, textColor);
 
 
@@ -114,13 +114,21 @@ public class ListView implements UIComponent {
         });
     }
 
+    /**
+     * Used for drawing shaders on objects
+     */
+    @Override
+    public void drawShader() {
+
+    }
+
     public interface onListViewElementClicked {
         void onItemClicked(int index, ListViewElement item);
     }
 
     public class ListViewElement {
 
-        private Object object;
+        private final Object object;
         private float yPos;
 
         public ListViewElement(Object o) {

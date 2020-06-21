@@ -17,7 +17,6 @@ import net.bplaced.abzzezz.ui.uicomponents.Button;
 import net.bplaced.abzzezz.ui.uicomponents.TextField;
 import net.bplaced.abzzezz.ui.uicomponents.*;
 import net.bplaced.abzzezz.utils.FontUtil;
-import net.bplaced.abzzezz.utils.GLSLShaderUtil;
 import net.bplaced.abzzezz.utils.RenderUtil;
 import org.lwjgl.input.Keyboard;
 
@@ -45,6 +44,7 @@ public class ExampleScreen extends Screen {
 
     @Override
     public void init() {
+        fontUtil = new FontUtil("Roboto-Light", 30);
         Logger.log("Refreshed", Logger.LogType.INFO);
 
         //Set arraylist
@@ -52,33 +52,33 @@ public class ExampleScreen extends Screen {
         arrayList.add("Example element");
         arrayList.add("Example element 2");
         //Create listview object
-        ListView listView = new ListView(arrayList, xPos, 400, 100, "Example ListView");
+     //   ListView listView = new ListView(arrayList, xPos, 400, 100, "Example ListView");
         //Add listener
-        listView.setClickListener((index, item) -> {
+     //   listView.setClickListener((index, item) -> {
             //Print index of clicked element
-            System.out.println("Index clicked " + index);
-        });
+     //       System.out.println("Index clicked " + index);
+     //   });
 
         //init textfield
-        this.textField = new TextField(xPos, 100, 200, 40, "Example Text box");
-        this.fontUtil = new FontUtil("Roboto-Light", 20);
+      //  this.textField = new TextField(xPos, 100, 200, 40, "Example Text box");
+  //      this.fontUtil = new FontUtil("Roboto-Light", 20);
 
         //Add new button
-        getUiComponents().add(new Button(1, "This is a example button", xPos, 200));
+     //   getUiComponents().add(new Button(1, "This is a example button", xPos, 200));
         //Add textfield
-        getUiComponents().add(textField);
+     //   getUiComponents().add(textField);
         //Create checkbox
-        getUiComponents().add(new CheckBox(false, xPos, 300, 10, "This is a example checkbox"));
-        //Add listview
-        getUiComponents().add(listView);
+     //   getUiComponents().add(new CheckBox(false, xPos, 300, 10, "This is a example checkbox"));
+     //   //Add listview
+     //   getUiComponents().add(listView);
         //Add colorchooser
 
-        ColorChooser colorChooser = new ColorChooser(xPos + 200, 100, 70);
-        colorChooser.setColorSelectedListener(color -> {
-            System.out.println("Color selected:" + color);
-        });
-        getUiComponents().add(colorChooser);
-        glslShaderUtil = new GLSLShaderUtil("", "");
+      //  ColorChooser colorChooser = new ColorChooser(xPos + 200, 100, 70);
+      //  colorChooser.setColorSelectedListener(color -> {
+       //     System.out.println("Color selected:" + color);
+       // });
+       // getUiComponents().add(colorChooser);
+       // glslShaderUtil = new GLSLShaderUtil("", "");
         super.init();
     }
 
@@ -108,18 +108,17 @@ public class ExampleScreen extends Screen {
      * Draw screen and render Font + a Quad
      */
 
-    GLSLShaderUtil glslShaderUtil;
-
     @Override
     public void drawScreen() {
         fontUtil.drawString("This is a example string at 10, 10", xPos, 10, Color.BLACK);
-        RenderUtil.drawQuad(xPos, 500, 40, 40, Color.BLUE);
+       // RenderUtil.drawQuad(xPos, 500, 40, 40, Color.BLUE);
+        RenderUtil.drawRoundedQuad(100, 200, 200, 100, 50, new Color(0,0,0, 100));
         super.drawScreen();
     }
 
     @Override
     public void drawShader() {
-        glslShaderUtil.draw();
+     //   glslShaderUtil.draw();
         super.drawShader();
     }
 }

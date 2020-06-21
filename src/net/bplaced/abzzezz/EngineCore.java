@@ -15,7 +15,6 @@ import net.bplaced.abzzezz.file.CustomFile;
 import net.bplaced.abzzezz.file.FileManager;
 import net.bplaced.abzzezz.ui.Screen;
 import net.bplaced.abzzezz.utils.FontUtil;
-import net.bplaced.abzzezz.utils.RenderUtil;
 import net.bplaced.abzzezz.utils.Util;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
@@ -38,6 +37,7 @@ public class EngineCore {
     private int fpsSync;
     private final int width;
     private final int height;
+    private OpenGLListener openGLListener;
 
     /*
     Handlers
@@ -77,7 +77,7 @@ public class EngineCore {
     public EngineCore(int width, int height, Screen startScreen) {
         this.gameName = "Test Game";
         this.gameVersion = 1.0F;
-        this.fontDir = FontUtil.class.getResource("font/").getPath();
+        this.fontDir = "font/";
         this.screen = startScreen;
         this.fpsSync = 60;
         this.mainDir = new File(System.getProperty("user.home"), gameName);
@@ -136,11 +136,13 @@ public class EngineCore {
      */
     private void run(int width, int height) {
         initGL(width, height);
+        if (openGLListener != null) openGLListener.onGLInitialised();
         while (true) {
             update();
             Display.update();
             Display.sync(fpsSync);
             if (Display.isCloseRequested()) {
+                shutdownHook();
                 Display.destroy();
                 System.exit(0);
             }
@@ -170,9 +172,11 @@ public class EngineCore {
         //Enable Textures and configure
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glShadeModel(GL11.GL_SMOOTH);
+        //Clear color
         GL11.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         GL11.glClearDepth(1.0f);
-        GL11.glViewport(0,0,width,height);
+        //Set viewport
+        GL11.glViewport(0, 0, width, height);
         //Enable Blend
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -183,17 +187,17 @@ public class EngineCore {
      * Update Method
      */
     private void update() {
+        //Screen element projection
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
         GL11.glOrtho(0, width, height, 0, 0.0f, 1.0f);
-
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glLoadIdentity();
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glLoadIdentity();
         screen.drawScreen();
 
-
+        //Shader Projection
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
         GLU.gluPerspective(45.0f, ((float) width / (float) height), 100.0f, 0.0f);
@@ -201,7 +205,9 @@ public class EngineCore {
         GL11.glLoadIdentity();
         screen.drawShader();
 
-
+        /**
+         * Mouse and Keyboard hook
+         */
         while (Mouse.next()) {
             if (Mouse.getEventButtonState()) screen.mousePressed(Mouse.getEventButton());
         }
@@ -210,9 +216,20 @@ public class EngineCore {
         }
     }
 
+    private void shutdownHook() {
+        Logger.log("Shutdown Hook", Logger.LogType.INFO);
+        fileManager.save();
+        Logger.log("Saving files", Logger.LogType.INFO);
+        if (openGLListener != null) openGLListener.onCloseRequested();
+    }
+
     /**
      * Getters and setters to configure
      */
+
+    public void setOpenGLListener(OpenGLListener openGLListener) {
+        this.openGLListener = openGLListener;
+    }
 
     public String getGameName() {
         return gameName;
@@ -293,6 +310,18 @@ public class EngineCore {
 
     public void setBackgroundColor(Color color) {
         Util.backgroundColor = color;
+    }
+
+    public interface OpenGLListener {
+        /**
+         * Hook for initialised OpenGL
+         */
+        void onGLInitialised();
+
+        /**
+         * Hook for the user to add elements that are run when close is requested
+         */
+        void onCloseRequested();
     }
 
 }

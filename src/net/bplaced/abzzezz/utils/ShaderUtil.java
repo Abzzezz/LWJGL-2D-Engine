@@ -21,13 +21,14 @@ import java.net.URL;
 
 import static org.lwjgl.opengl.GL11.*;
 
-public class GLSLShaderUtil {
+public abstract class ShaderUtil {
 
-    private int program;
-    private float speed;
+    private final int program;
     private boolean shader;
 
-    public GLSLShaderUtil(String vertexShader, String fragmentShader) {
+    //TODO: ShaderUtil rework
+    
+    public ShaderUtil(String vertexShader, String fragmentShader) {
         int vertexShader1 = 0, fragmentShader1 = 0;
         this.program = ARBShaderObjects.glCreateProgramObjectARB();
 
@@ -41,7 +42,7 @@ public class GLSLShaderUtil {
         setup(vertexShader1, fragmentShader1);
     }
 
-    public GLSLShaderUtil(URL vertexShader, URL fragmentShader) {
+    public ShaderUtil(URL vertexShader, URL fragmentShader) {
         int vertexShader1 = 0, fragmentShader1 = 0;
         this.program = ARBShaderObjects.glCreateProgramObjectARB();
 
@@ -79,9 +80,9 @@ public class GLSLShaderUtil {
     }
 
 
-    private String getShaderByUrl(URL shaderURL) {
+    protected String getShaderByUrl(URL shaderURL) {
+        //TODO: rewrite
         StringBuilder stringBuilder = new StringBuilder();
-
         try {
             final BufferedReader reader = new BufferedReader(new InputStreamReader(shaderURL.openStream()));
             String line;
@@ -99,6 +100,15 @@ public class GLSLShaderUtil {
         glPushMatrix();
         if (shader) ARBShaderObjects.glUseProgramObjectARB(program);
         glLoadIdentity();
+        /*
+        Load texture and pass to shader
+
+          if(texture != -1) {
+            GL13.glActiveTexture(GL13.GL_TEXTURE0);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
+            GL20.glUniform1f(GL20.glGetUniformLocation(program, "video"), 0);
+        }
+         */
         glTranslatef(0.0f, 0.0f, -10.0f);
         glColor3f(1.0f, 1.0f, 1.0f);
         glBegin(GL_QUADS);
@@ -114,7 +124,7 @@ public class GLSLShaderUtil {
         glPopMatrix();
     }
 
-    private int createShader(String shaderSource, int shaderType) {
+    protected int createShader(String shaderSource, int shaderType) {
         try {
             int shader = ARBShaderObjects.glCreateShaderObjectARB(shaderType);
             if (shader == 0) return 0;
@@ -126,7 +136,7 @@ public class GLSLShaderUtil {
         }
     }
 
-    private String getLogInfo(int obj) {
+    protected String getLogInfo(int obj) {
         return ARBShaderObjects.glGetInfoLogARB(obj, ARBShaderObjects.glGetObjectParameteriARB(obj, ARBShaderObjects.GL_OBJECT_INFO_LOG_LENGTH_ARB));
     }
 }

@@ -151,6 +151,14 @@ public class TextField implements UIComponent {
         if (isTextFieldHovered() && mouseButton == 0) clicked = !clicked;
     }
 
+    /**
+     * Used for drawing shaders on objects
+     */
+    @Override
+    public void drawShader() {
+
+    }
+
     private boolean isTextFieldHovered() {
         return MouseUtil.mouseHovered(xPos, yPos, width, height);
     }

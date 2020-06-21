@@ -14,7 +14,6 @@ import net.bplaced.abzzezz.ui.uicomponents.Button;
 import net.bplaced.abzzezz.ui.uicomponents.UIComponent;
 import org.lwjgl.opengl.Display;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -34,10 +33,11 @@ public abstract class Screen {
      *
      * @param buttonID
      */
-    public void buttonPressed(float buttonID) {
-    }
+    public void buttonPressed(float buttonID) { }
 
-    private void initComponents() {uiComponents.forEach(UIComponent::initComponent);}
+    private void initComponents() {
+        uiComponents.forEach(UIComponent::initComponent);
+    }
 
     /*
     Screen drawing - simple
@@ -47,7 +47,10 @@ public abstract class Screen {
     }
 
 
-    public void drawShader() {}
+    public void drawShader() {
+        uiComponents.forEach(UIComponent::drawShader);
+    }
+
     /**
      * Gets called if mouse button down
      *

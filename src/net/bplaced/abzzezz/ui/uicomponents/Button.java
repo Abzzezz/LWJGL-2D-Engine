@@ -101,6 +101,14 @@ public class Button implements UIComponent {
         }
     }
 
+    /**
+     * Used for drawing shaders on objects
+     */
+    @Override
+    public void drawShader() {
+
+    }
+
     public float getXPos() {
         return xPos;
     }

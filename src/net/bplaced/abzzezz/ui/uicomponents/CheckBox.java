@@ -68,7 +68,7 @@ public class CheckBox implements UIComponent {
      */
     @Override
     public void drawComponent() {
-        if(checked) animationUtil.animate();
+        if (checked) animationUtil.animate();
         RenderUtil.drawCircle(xPos + size / 2, yPos, size, 3, Util.mainColor);
         RenderUtil.drawCircle(xPos + size / 2, yPos, animationUtil.getInt(), 3, Util.mainColor.darker());
 
@@ -83,8 +83,16 @@ public class CheckBox implements UIComponent {
     public void mouseListener(int mouseButton) {
         if (checkBoxHovered() && mouseButton == 0) {
             checked = !checked;
-            if(!checked) animationUtil.reset();
+            if (!checked) animationUtil.reset();
         }
+    }
+
+    /**
+     * Used for drawing shaders on objects
+     */
+    @Override
+    public void drawShader() {
+
     }
 
     private boolean checkBoxHovered() {
