@@ -80,7 +80,7 @@ public class ExampleScreen extends Screen {
        // getUiComponents().add(colorChooser);
        // glslShaderUtil = new GLSLShaderUtil("", "");
 
-        getUiComponents().add(new Slider(100, 100, 100, 40, 0, 50, 0));
+        getUiComponents().add(new Slider("Test slider",100, 100, 100, 40, 0, 50, 0));
         super.init();
     }
 

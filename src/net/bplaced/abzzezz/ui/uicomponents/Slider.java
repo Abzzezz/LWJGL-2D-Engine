@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020. Roman P.
  * All code belongs to its owners!
- * Last modified: 24.06.20, 15:29
+ * Last modified: 24.06.20, 16:00
  * APIS used:
  * LWJGL (https://www.lwjgl.org/)
  * Slick (http://slick.ninjacave.com/slick-util/)
@@ -9,6 +9,15 @@
  */
 
 package net.bplaced.abzzezz.ui.uicomponents;
+/*
+ * Copyright (c) 2020. Roman P.
+ * All code belongs to its owners!
+ * Last modified: 24.06.20, 15:29
+ * APIS used:
+ * LWJGL (https://www.lwjgl.org/)
+ * Slick (http://slick.ninjacave.com/slick-util/)
+ * Abzzezz Util (https://github.com/Abzzezz/AbzzezzUtil)
+ */
 
 import net.bplaced.abzzezz.utils.MouseUtil;
 import net.bplaced.abzzezz.utils.RenderUtil;
@@ -22,8 +31,11 @@ public class Slider implements UIComponent {
 
     private float min, max, current, xPos, yPos, step;
     private int width, height;
+    private SliderListener sliderListener;
+    private String text;
 
-    public Slider(float xPos, float yPos, int width, int height, float min, float max, float current) {
+    public Slider(String text, float xPos, float yPos, int width, int height, float min, float max, float current) {
+        this.text = text;
         this.min = min;
         this.max = max;
         this.current = current;
@@ -33,7 +45,8 @@ public class Slider implements UIComponent {
         this.height = height;
     }
 
-    public Slider(float xPos, float yPos, int width, int height, float min, float max) {
+    public Slider(String text, float xPos, float yPos, int width, int height, float min, float max) {
+        this.text = text;
         this.min = min;
         this.max = max;
         this.xPos = xPos;
@@ -47,11 +60,12 @@ public class Slider implements UIComponent {
         this.step = width / max;
     }
 
+    //TODO: More design
     @Override
     public void drawComponent() {
-     //   System.out.println(current);
         RenderUtil.drawQuad(xPos, yPos - height / 4, width, height, Color.GRAY);
         RenderUtil.drawQuad(xPos, yPos, current * step, height / 2, Util.mainColor);
+        textFont.drawString(text + ":" + Math.round(current), xPos, yPos - height, textColor);
     }
 
     /**
@@ -70,18 +84,24 @@ public class Slider implements UIComponent {
     public void keyListener(int keyCode, char keyTyped) {
         if (keyCode == Keyboard.KEY_LEFT) {
             current -= step;
+            if(sliderListener != null) sliderListener.onSliderValueChanged(current);
         } else if (keyCode == Keyboard.KEY_RIGHT) {
             current += step;
+            if(sliderListener != null) sliderListener.onSliderValueChanged(current);
         }
-
         this.current = clamp(current, min, max);
     }
 
     @Override
     public void mouseListener(int mouseButton) {
         if (MouseUtil.mouseHovered(xPos, yPos, width, height)) {
-              current = min + ((Mouse.getX() - xPos) / width) * (max - min);
+            current = min + ((Mouse.getX() - xPos) / width) * (max - min);
+            if(sliderListener != null) sliderListener.onSliderValueChanged(current);
         }
+    }
+
+    public void setSliderListener(SliderListener sliderListener) {
+        this.sliderListener = sliderListener;
     }
 
     public float getMin() {
@@ -154,5 +174,9 @@ public class Slider implements UIComponent {
     @Override
     public void drawShader() {
 
+    }
+
+    public interface SliderListener {
+        void onSliderValueChanged(float value);
     }
 }
