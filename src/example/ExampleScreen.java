@@ -79,6 +79,8 @@ public class ExampleScreen extends Screen {
        // });
        // getUiComponents().add(colorChooser);
        // glslShaderUtil = new GLSLShaderUtil("", "");
+
+        getUiComponents().add(new Slider(100, 100, 100, 40, 0, 50, 0));
         super.init();
     }
 
@@ -89,7 +91,6 @@ public class ExampleScreen extends Screen {
      */
     @Override
     public void buttonPressed(float buttonID) {
-        if (buttonID == 1) EngineCore.getInstance().setScreen(new ExampleScreen2());
         super.buttonPressed(buttonID);
     }
 
