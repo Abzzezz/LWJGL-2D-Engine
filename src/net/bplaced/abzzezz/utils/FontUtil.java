@@ -18,6 +18,8 @@ import org.newdawn.slick.font.effects.ColorEffect;
 
 import java.awt.*;
 import java.io.InputStream;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 public class FontUtil {
     private UnicodeFont unicodeFont;
@@ -25,7 +27,7 @@ public class FontUtil {
     public FontUtil(String fontName, int size) {
         try {
             String fontDir = EngineCore.getInstance().getFontDir() + fontName + ".ttf";
-            InputStream inputStream = getClass().getResourceAsStream(fontDir);
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fontDir);
             Font awtFont = Font.createFont(Font.PLAIN, inputStream);
             this.unicodeFont = new UnicodeFont(awtFont, size, false, false);
             unicodeFont.addAsciiGlyphs();

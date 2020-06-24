@@ -77,13 +77,14 @@ public class EngineCore {
     public EngineCore(int width, int height, Screen startScreen) {
         this.gameName = "Test Game";
         this.gameVersion = 1.0F;
-        this.fontDir = "font/";
+        this.fontDir = "./font/";
         this.screen = startScreen;
         this.fpsSync = 60;
         this.mainDir = new File(System.getProperty("user.home"), gameName);
         this.width = width;
         this.height = height;
         this.initHeaders();
+        
     }
 
     public static EngineCore getInstance() {
